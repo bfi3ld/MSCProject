@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+
+<html lang="en"></html>
+
+<html>
+
+<head>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block import_block %}
+        <!--Other file imports go here-->
+    {% endblock %}
+    <title>
+      
+
+
+    </title>
+
+    <!--Imports-->
+
+  
+
+    <nav>
+            <h1></h1>
+        </nav>
+    
+
+   
+
+
+</head>
+
+
+<body>
+    <div class = "page">
+            <div class = "left-content">
+                    
+                    
+                </div>
+            
+            <div class = "middle-content">
+                    {% block content %}
+                    {% endblock %}
+            </div>
+
+            <div class = "right-content">
+
+            </div>
+
+        
+    </div>
+    
+    
+
+</body>
+</html>

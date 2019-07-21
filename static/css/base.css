@@ -1,0 +1,60 @@
+nav {
+    background-color:#6B7A8F;
+
+    
+    height:90px;
+    margin:0;
+    padding:0;
+    
+}
+
+
+
+
+
+body, html {
+  
+    margin:0;
+    
+    
+}
+
+.page{
+    background-color:Whitesmoke;
+    width: 100%;
+    height:100vh;
+    
+    display: flex;
+    
+}
+
+.left-content {
+    
+    width: 10%;
+    height: 100%;
+}
+
+.middle-content {
+    
+    width: 80%;
+    height:100%;
+    display: flex;
+	margin-top:40px;
+  align-items:center;
+  justify-content:center;
+  background-color: whitesmoke;
+
+  
+  flex-direction:column;
+  
+    
+
+}
+
+
+.right-content {
+    
+    width: 10%;
+    height: 100%;
+
+}
