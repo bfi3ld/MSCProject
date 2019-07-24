@@ -13,7 +13,7 @@
        <form id="SubmissionForm" method="post" action="make_submission">
         {% csrf_token %}
         {{ form }}
-        {{ submission.content}}
+       
       
         <input type="submit" name="submit" value="make submission" />
         </form>

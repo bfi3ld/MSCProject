@@ -1,0 +1,12 @@
+.form_container {
+    display:flex;
+    width:400px;
+    background-color:rgba(107,122,143, 0.3);
+    align-items:center;
+    justify-content:center;
+}
+
+.form_input {
+    width:100%;
+   
+}

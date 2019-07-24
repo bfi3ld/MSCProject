@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block import_block %}
+<link rel="stylesheet" href="{% static 'css/teacher_view.css' %}">
+<script src="{% static 'js/teacher_view.js' %}"></script>
+    {% endblock %}
+
+{% block content %}
+<form id="CreateModuleForm" method="post">
+        {% csrf_token %}
+        {{ form }}
+       
+      
+        <input type="submit" name="submit"/>
+        </form>
+
+{% endblock %}

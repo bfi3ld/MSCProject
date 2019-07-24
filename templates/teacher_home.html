@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+
+{% block import_block %}
+<link rel="stylesheet" href="{% static 'css/teacher_home.css' %}">
+
+
+    {% endblock %}
+
+{% block content %}
+<button id = "add_patches">Add patches</button>
+<div class = "form_container">
+<form id="CreateModuleForm" method="post">
+    {% csrf_token %}
+    <div class = "form_input"><p>Name: </p>{{ p_form.name }} </div>
+    <div class = "form_input"><p>Assessment title: </p>{{ a_form.title }} </div>
+    <div class = "form_input"><p>Assessment text: </p>{{ a_form.assessment }} </div>
+    <div class = "form_input"><p>Submission deadline: </p>{{ p_form.submission_date }}</div>
+    <div class = "form_input"> <p>Peer review deadline </p> {{ p_form.peer_review_date }}</div>
+  
+    
+   
+  
+    <input type="submit" name="submit"/>
+    </form>
+</div>
+
+
+{% endblock %}

@@ -21,6 +21,7 @@ TINYMCE_JS_URL = STATIC_DIR + 'js/tiny_mce/tiny_mce.js'
 TINYMCE_JS_ROOT = STATIC_DIR + 'js/tiny_mce'
 
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
@@ -42,8 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'project',
     'tinymce',
+    'project'
 ]
 
 MIDDLEWARE = [
