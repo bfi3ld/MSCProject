@@ -9,22 +9,19 @@
     {% endblock %}
 
 {% block content %}
-<button id = "add_patches">Add patches</button>
-<div class = "form_container">
-<form id="CreateModuleForm" method="post">
-    {% csrf_token %}
-    <div class = "form_input"><p>Name: </p>{{ p_form.name }} </div>
-    <div class = "form_input"><p>Assessment title: </p>{{ a_form.title }} </div>
-    <div class = "form_input"><p>Assessment text: </p>{{ a_form.assessment }} </div>
-    <div class = "form_input"><p>Submission deadline: </p>{{ p_form.submission_date }}</div>
-    <div class = "form_input"> <p>Peer review deadline </p> {{ p_form.peer_review_date }}</div>
-  
-    
-   
-  
-    <input type="submit" name="submit"/>
-    </form>
-</div>
 
+<table border="1" style="width:100%">
+    {% for header_cell in header_row %}
+    <th>{{header_cell}}</th>
+    {% endfor %}
+
+    {% for row_content in table_content %}
+    <tr>
+        {% for cell_content in row_content %}
+        <td>{{ cell_content }}</td>
+        {% endfor %}
+    </tr>
+    {% endfor %}
+  </table>
 
 {% endblock %}
