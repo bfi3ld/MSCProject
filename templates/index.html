@@ -1,2 +1,15 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+
+
+{% block import_block %}
+
+
+    {% endblock %}
+
+{% block content %}
+ <div class = buttons>
+ <a id = "log_in"><h2>Log in</h2></a>
+ <a id = "register" href = "{% url 'teacher_register' %}"><h2>Register as teacher</h2></a>
+</div>
+{% endblock %}

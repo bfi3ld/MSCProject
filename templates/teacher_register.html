@@ -3,6 +3,7 @@
 
 {% block import_block %}
 <link rel="stylesheet" href="{% static 'css/assessment.css' %}">
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
     {% endblock %}
 
@@ -11,11 +12,11 @@
     <form id="TeacherRegisterForm" method="post">
     
      {% csrf_token %}
-     {{ form }}
-     {{ user_form }}
+     {{ form.as_table }}
+     {{ user_form.as_table }}
     
    
-     <input type="submit" name="submit" value="register" />
+     <input type="submit" name="submit" value="Register" />
     </form>
      </div>
 

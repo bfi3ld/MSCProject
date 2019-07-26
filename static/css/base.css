@@ -8,19 +8,29 @@ nav {
     
 }
 
-button {
-    width: 200px;
-    height: 50px;
+a, input, input[type = submit] {
+    width: 250px;
+    height: 80px;
     background-color: #6B7A8F;
     border-radius:15px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-decoration:none;
+    text-align:center;
+    color:black;
+    font-family: courier;
 }
-
 
 body, html {
   
     margin:0;
     
     
+}
+
+h2 {
+    font-family:courier;
 }
 
 .page{
@@ -30,6 +40,16 @@ body, html {
     
     display: flex;
     
+}
+
+.buttons {
+    width:300px;
+    height:200px;
+    
+    display:flex;
+    flex-direction:column;
+    justify-content: space-evenly;
+    align-items:center;
 }
 
 .left-content {

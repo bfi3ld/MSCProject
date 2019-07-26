@@ -1,20 +1,19 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
 
 import django.utils.timezone
 
 # Create your models here.
 
 
-class Student(models.Model):
-    name = models.CharField(max_length=100)
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_student = models.BooleanField('student', default=True)
+class User(AbstractUser):
+    
+   
+    is_student = models.BooleanField('student', default=False)
+    is_teacher = models.BooleanField('teacher', default=False)
+    email = models.CharField(max_length =100, default = '') 
+    
 
-
-class Teacher(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    is_teacher = models.BooleanField('teacher', default=True)
 
 
 class Patch(models.Model):
@@ -30,7 +29,7 @@ class Submission(models.Model):
     patch = models.ForeignKey(Patch, on_delete=models.CASCADE)
     content = models.TextField()  # ('content', default = "")
     published_date = models.DateTimeField(blank=True, null=True)
-    student = models.ForeignKey('Student', on_delete=models.CASCADE)
+    student = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Peer_rubrik(models.Model):

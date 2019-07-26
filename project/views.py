@@ -5,7 +5,8 @@ from django.utils.timezone import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
 from project.models import User
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.decorators import login_required
+
 
 # Create your views here.
 def index(request):
@@ -14,19 +15,34 @@ def index(request):
 
 def teacher_register(request):
     if request.method == 'POST':
-        form = TeacherRegisterForm(request.POST)
-        user_form = UserCreationForm(request.POST)
-        if form.is_valid() and user_form.is_valid():
+        form = UserRegisterForm(request.POST)
+        
+        if form.is_valid():
 
-            teacher = form.save(commit=False)
-            user = user_form.save()
-            teacher.user = user
-            teacher.save()
-            return redirect('index.html')
+            user = form.save()
+            user.is_teacher = True
+            
+            return redirect('index')
     else:
-        user_form = UserCreationForm()
-        form = TeacherRegisterForm()
-    return render(request, 'teacher_register.html', {'form': form, 'user_form': user_form})
+       
+        form = UserRegisterForm()
+    return render(request, 'teacher_register.html', {'form': form})
+
+
+def add_student(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+       
+        if form.is_valid():
+
+            user = form.save()
+            user.is_student = True
+            user.save()
+            return redirect('teacher_home')
+    else:
+       
+        form = UserRegisterForm()
+    return render(request, 'add_student.html', {'form': form})
 
 
 def add_patch(request):
@@ -81,7 +97,7 @@ def make_submission(request):
 
         if form.is_valid():
             submission = form.save(commit=False)
-            #submission.student = request.user
+            submission.student = request.user
             submission.published_date = datetime.now()
             submission.save()
 
@@ -107,3 +123,7 @@ def give_feedback(request):
 
 def view_feedback(request):
     return render(request, 'view_feedback.html')
+
+
+def student_home(request):
+    return render(request, 'student_home.html')

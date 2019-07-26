@@ -1,8 +1,8 @@
 from django import forms
-from django.contrib.auth.models import User
-from project.models import Submission, Student, Teacher, Patch  # , Peer_rubrik
+from project.models import User
+from project.models import Submission, User, Patch  # , Peer_rubrik
 from tinymce.widgets import TinyMCE
-
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 
 
@@ -23,19 +23,32 @@ class SubmissionForm(forms.ModelForm):
         fields = ['content']
 
 
-class TeacherRegisterForm(forms.ModelForm):
-    first_name = forms.CharField(
-        max_length=30, required=False, help_text='Optional.')
-    last_name = forms.CharField(
-        max_length=30, required=False, help_text='Optional.')
-    email = forms.EmailField(
-        max_length=254, help_text='Required. Inform a valid email address.')
+class UserRegisterForm(UserCreationForm):
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email',)
+        #def __init__(self, *args, **kwargs):
+         #   super(myUserCreationForm, self).__init__(*args, **kwargs)
 
-    class Meta:
-        model = Teacher
-        fields = ('first_name', 'last_name', 'email',)
+           # self.fields['username'].widget.attrs['class'] = 'form-control'
+           # self.fields['password1'].widget.attrs['class'] = 'form-control'
+           # self.fields['password2'].widget.attrs['class'] = 'form-control'
 
 
+class UserEditForm(UserChangeForm):
+    email = forms.CharField(max_length = 100)
+    class Meta(UserChangeForm):
+        model = User
+        fields = UserCreationForm.Meta.fields + ('email',)
+
+
+
+
+   
 class CreatePatchForm(forms.ModelForm):
     class Meta:
         model = Patch
