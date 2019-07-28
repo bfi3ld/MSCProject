@@ -4,6 +4,7 @@ from project.models import Submission, User, Patch  # , Peer_rubrik
 from tinymce.widgets import TinyMCE
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
+from django.contrib.auth.forms import AuthenticationForm
 
 
 class TinyMCEWidget(TinyMCE):
@@ -46,6 +47,9 @@ class UserEditForm(UserChangeForm):
         fields = UserCreationForm.Meta.fields + ('email',)
 
 
+class CustomAuthenticationForm(AuthenticationForm):
+    username = forms.CharField(widget = forms.TextInput(attrs = {'class' : 'login_fields', 'placeholder' : 'Username'}))
+    password = forms.CharField(widget = forms.PasswordInput(attrs = {'class' : 'login_fields', 'placeholder' : 'Password'}))
 
 
    

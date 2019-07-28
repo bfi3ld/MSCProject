@@ -6,6 +6,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
 from project.models import User
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate
+from django.contrib import messages
 
 
 # Create your views here.
@@ -19,8 +21,10 @@ def teacher_register(request):
         
         if form.is_valid():
 
-            user = form.save()
+            user = form.save(commit=False)
+            #user.refresh_from_db()
             user.is_teacher = True
+            user.save()
             
             return redirect('index')
     else:
@@ -28,7 +32,32 @@ def teacher_register(request):
         form = UserRegisterForm()
     return render(request, 'teacher_register.html', {'form': form})
 
+def log_in(request):
+    if request.method == 'POST':
+        form = CustomAuthenticationForm(request=request, data=request.POST)
+        if form.is_valid():
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                if user.is_student:
+                    return redirect('student_home')
+                elif user.is_teacher:
+                    return redirect('teacher_home')
+            else:
+                messages.error(request, "Invalid username or password.")
+        else:
+            messages.error(request, "Invalid username or password.")
+    else:
+        form = CustomAuthenticationForm()
+    return render(request = request,
+                    template_name = "login.html",
+                    context={"form":form})
 
+
+    
+    
 def add_student(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -63,13 +92,13 @@ def add_patch(request):
 
 
 def teacher_home(request):
-    all_students = Student.objects.all()
+    all_students = User.objects.filter(is_student = True)
     all_patches = Patch.objects.all()
     header_row = ['Student']+[p.name for p in all_patches]
     table_content = []
 
     for s in all_students:
-        row_content = [s.name]
+        row_content = [s.username]
         for p in all_patches:
             try:
                 sub = Submission.objects.get(student__id=s.id, patch__name=p.name)

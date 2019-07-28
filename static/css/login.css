@@ -1,0 +1,19 @@
+
+.container {
+    background-color:white;
+    height:400px;
+    width:400px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction:column;
+    font-family:courier;
+}
+
+.login_fields{
+    width:300px;
+    height:60px;
+    background-color:whitesmoke;
+    font-family:courier;
+   
+}
