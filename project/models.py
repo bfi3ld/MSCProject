@@ -16,24 +16,24 @@ class User(AbstractUser):
 
 
 
-class Patch(models.Model):
-    name = models.CharField(max_length=100, primary_key=True)
-    start_date = models.DateTimeField()
+class Assignment(models.Model):
+    assignment_title = models.CharField(max_length=100, primary_key=True)
+    assignment_description = models.TextField()
     submission_date = models.DateTimeField()
     peer_review_date = models.DateTimeField()
-    assignment_title = models.CharField(max_length=100)
-    assignment_description = models.TextField()
+    
+    
 
 
 class Submission(models.Model):
-    patch = models.ForeignKey(Patch, on_delete=models.CASCADE)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     content = models.TextField()  # ('content', default = "")
     published_date = models.DateTimeField(blank=True, null=True)
     student = models.ForeignKey(User, on_delete=models.CASCADE)
 
 
 class Peer_rubrik(models.Model):
-    patch = models.ForeignKey(Patch, on_delete=models.CASCADE)
+    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     peer_rubrik_text = models.TextField(default='')
 
 # class Peer_review_rubrik(models.Model):

@@ -1,6 +1,6 @@
 from django import forms
 from project.models import User
-from project.models import Submission, User, Patch  # , Peer_rubrik
+from project.models import Submission, User, Assignment  # , Peer_rubrik
 from tinymce.widgets import TinyMCE
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
@@ -48,21 +48,21 @@ class UserEditForm(UserChangeForm):
 
 
 class CustomAuthenticationForm(AuthenticationForm):
-    username = forms.CharField(widget = forms.TextInput(attrs = {'class' : 'login_fields', 'placeholder' : 'Username'}))
+    username = forms.CharField(widget = forms.TextInput(attrs = {'class' : 'login_fields', 'placeholder' : 'Username',}))
     password = forms.CharField(widget = forms.PasswordInput(attrs = {'class' : 'login_fields', 'placeholder' : 'Password'}))
 
 
-   
-class CreatePatchForm(forms.ModelForm):
-    class Meta:
-        model = Patch
-        fields = ('name', 'start_date',  'submission_date', 'peer_review_date')
+
+class CreateAssignmentForm(forms.ModelForm):
+    assignment_title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'style':'width:800px'}))
+    assignment_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    submission_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    peer_review_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
-class CreateAssessmentForm(forms.ModelForm):
     class Meta:
-        model = Patch
-        fields = ('assignment_title', 'assignment_description')
+        model = Assignment
+        fields = ('assignment_title', 'assignment_description', 'submission_date', 'peer_review_date')
 
 # class CreateRubrikForm(forms.ModelForm):
 #     class Meta:
@@ -70,7 +70,3 @@ class CreateAssessmentForm(forms.ModelForm):
 #         fields = ('peer_rubrik_text',)
 
 
-# class CreatePatchesForm(forms.ModelForm):
-#     class Meta:
-#         model = Patch
-#         fields = ['']

@@ -60,49 +60,52 @@ def log_in(request):
     
 def add_student(request):
     if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
+        register_form = UserRegisterForm(request.POST)
+        
        
-        if form.is_valid():
+        if register_form.is_valid():
 
-            user = form.save()
+            user = register_form.save(commit = False)
             user.is_student = True
             user.save()
-            return redirect('teacher_home')
+            if request.POST.get('save'):
+                return redirect('teacher_home')
+            elif request.POST.get('save_and_add_new'):
+                return redirect('add_student')
     else:
        
-        form = UserRegisterForm()
-    return render(request, 'add_student.html', {'form': form})
+        register_form = UserRegisterForm()
+        
+    return render(request, 'add_student.html', {'register_form': register_form})
 
 
-def add_patch(request):
+def add_assignment(request):
     if request.method == 'POST':
-        patch_form = CreatePatchForm(request.POST)
-        assessment_form = CreateAssessmentForm(request.POST)
+        assignment_form = CreateAssignmentForm(request.POST)
+        
 
-        if patch_form.is_valid() and assessment_form.is_valid():
-            Patch = patch_form.save(commit=False)
-            Assessment = assessment_form.save()
-            Patch.assessment = assessment
-            Patch.save()
-        return redirect()
+        if assignment_form.is_valid():
+            Assignment = assignment_form.save(commit=False)
+            Assignment.save()
+        return redirect('teacher_home')
     else:
-        patch_form = CreatePatchForm()
-        assessment_form = CreateAssessmentForm()
-    return render(request, 'teacher_home.html', {'p_form': patch_form, 'a_form': assessment_form})
+        assignment_form = CreateAssignmentForm()
+    return render(request, 'add_assignment.html', {'assignment_form': assignment_form})
 
 
 def teacher_home(request):
-    all_students = User.objects.filter(is_student = True)
-    all_patches = Patch.objects.all()
-    header_row = ['Student']+[p.name for p in all_patches]
+    students = User.objects.filter(is_student = True)
+    assignments = Assignment.objects.all()
+    header_row = ['Student']+[a.assignment_title for a in assignments]
     table_content = []
+    
 
-    for s in all_students:
+    for s in students:
         row_content = [s.username]
-        for p in all_patches:
+        for a in assignments:
             try:
-                sub = Submission.objects.get(student__id=s.id, patch__name=p.name)
-                if sub.published_date <= p.submission_date:
+                sub = Submission.objects.get(student__id = s.id, assignment = a.assignment_title)
+                if sub.published_date <= a.submission_date:
                     cell_content = 'on time'
                 else:
                     cell_content = 'late'

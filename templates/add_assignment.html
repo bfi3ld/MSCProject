@@ -2,17 +2,19 @@
 {% load staticfiles %}
 
 {% block import_block %}
-<link rel="stylesheet" href="{% static 'css/teacher_view.css' %}">
-<script src="{% static 'js/teacher_view.js' %}"></script>
+
+
     {% endblock %}
 
 {% block content %}
-<form id="CreateModuleForm" method="post">
+<div class = "form_container">
+<form action = "" class = "form" method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ assignment_form }}
        
       
         <input type="submit" name="submit"/>
         </form>
+</div>
 
 {% endblock %}

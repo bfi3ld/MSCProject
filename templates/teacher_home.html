@@ -5,23 +5,35 @@
 {% block import_block %}
 <link rel="stylesheet" href="{% static 'css/teacher_home.css' %}">
 
-
-    {% endblock %}
+{% endblock %}
 
 {% block content %}
+<div class =  "page_content">
 
-<table border="1" style="width:100%">
-    {% for header_cell in header_row %}
-    <th>{{header_cell}}</th>
-    {% endfor %}
+    <div class =  "button_container">
+        <a class = "add_students" href = "{% url 'add_student'%}">Add/Edit students</a>
+        <a class = "add_assignment" href = "{% url 'add_assignment'%}">Add patch</a>
+    </div>
 
-    {% for row_content in table_content %}
-    <tr>
-        {% for cell_content in row_content %}
-        <td>{{ cell_content }}</td>
-        {% endfor %}
-    </tr>
-    {% endfor %}
-  </table>
+    <div class = "student_form">
+
+        <table class ="1" >
+            {% for header_cell in header_row %}
+            <th>{{header_cell}}</th>
+            {% endfor %}
+            {% for row_content in table_content %}
+            
+            <tr>
+                
+                
+                {% for cell_content in row_content %}
+                <td>{{ cell_content }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+  </div>
+ 
 
 {% endblock %}

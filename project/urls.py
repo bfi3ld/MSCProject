@@ -14,5 +14,6 @@ urlpatterns = [
     path('patch/assessment/make_submission', views.make_submission, name='make_submission'),
     path('teacher_home', views.teacher_home, name='teacher_home'),
     path('teacher_home/teacher_patches', views.teacher_patches, name='teacher_patches'),
-    path('teacher_home/add_student', views.add_student, name = 'add_student')
+    path('teacher_home/add_student', views.add_student, name = 'add_student'),
+    path('teacher_home/add_assignment', views.add_assignment, name = 'add_assignment')
 ]
