@@ -1,6 +1,6 @@
 from django import forms
 from project.models import User
-from project.models import Submission, User, Assignment  # , Peer_rubrik
+from project.models import Submission, User, Assignment, Student  # , Peer_rubrik
 from tinymce.widgets import TinyMCE
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
@@ -39,6 +39,13 @@ class UserRegisterForm(UserCreationForm):
            # self.fields['password1'].widget.attrs['class'] = 'form-control'
            # self.fields['password2'].widget.attrs['class'] = 'form-control'
 
+class CreateStudentForm(forms.ModelForm):
+    group = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    class Meta():
+        model = Student
+        fields = {'group',}
+        
 
 class UserEditForm(UserChangeForm):
     email = forms.CharField(max_length = 100)

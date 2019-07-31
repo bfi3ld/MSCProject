@@ -1,33 +1,23 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
+
 {% block import_block %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
+<link rel="stylesheet" href="{% static 'css/student_home.css' %}">
     {% endblock %}
 {% block content %}
 <h1>My timeline</h1>
-                <div class="patchwork">
-				
-					
-                    <div class="patches" onclick = "window.location.href='patch';"></div>
-					
-					<div class = "timeline"></div>
-					<div class="peer-review"></div>
-					<div class = "timeline"></div>
-                    <div class="patches"></div>
-					<div class = "timeline"></div>
-					<div class="peer-review"></div>
-					<div class = "timeline"></div>
-                    <div class="patches"></div>
-					<div class = "timeline"></div>
-					<div class="peer-review"></div>
-					<div class = "timeline"></div>
-                    <div class="patches"></div>
-					<div class = "timeline"></div>
-					<div class="peer-review"></div>
-					<div class = "timeline"></div>
-                    <div class="patches"></div>
-					
-                </div>
+<div class="patchwork">
+	{% for a in assignments %}
 
-            </div>
+        <a class="patches" href = "{% url 'assignment_view' a.id %}">{{ a.assignment_title}}</a>
+					
+					<div class = "timeline"></div>
+					
+               
+				{% endfor %}
+			</div>
+	
+	
+			
+
 {% endblock %}

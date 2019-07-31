@@ -41,9 +41,10 @@ def log_in(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
+                
                 if user.is_student:
                     return redirect('student_home')
-                elif user.is_teacher:
+                else:
                     return redirect('teacher_home')
             else:
                 messages.error(request, "Invalid username or password.")
@@ -61,13 +62,18 @@ def log_in(request):
 def add_student(request):
     if request.method == 'POST':
         register_form = UserRegisterForm(request.POST)
-        
-       
-        if register_form.is_valid():
+        student_form = CreateStudentForm(request.POST)
+        if register_form.is_valid() and student_form.is_valid():
 
             user = register_form.save(commit = False)
             user.is_student = True
             user.save()
+            student = student_form.save(commit = False)
+            student.user = user
+            student.save()
+            
+           
+            
             if request.POST.get('save'):
                 return redirect('teacher_home')
             elif request.POST.get('save_and_add_new'):
@@ -75,8 +81,9 @@ def add_student(request):
     else:
        
         register_form = UserRegisterForm()
+        student_form = CreateStudentForm()
         
-    return render(request, 'add_student.html', {'register_form': register_form})
+    return render(request, 'add_student.html', {'register_form': register_form, 'student_form' : student_form})
 
 
 def add_assignment(request):
@@ -94,17 +101,17 @@ def add_assignment(request):
 
 
 def teacher_home(request):
-    students = User.objects.filter(is_student = True)
+    students = Student.objects.all()
     assignments = Assignment.objects.all()
     header_row = ['Student']+[a.assignment_title for a in assignments]
     table_content = []
     
 
     for s in students:
-        row_content = [s.username]
+        row_content = [s.user.username]
         for a in assignments:
             try:
-                sub = Submission.objects.get(student__id = s.id, assignment = a.assignment_title)
+                sub = Submission.objects.get(student__id = s.id, assignment_id = a.id)
                 if sub.published_date <= a.submission_date:
                     cell_content = 'on time'
                 else:
@@ -121,6 +128,8 @@ def teacher_home(request):
 
 def teacher_patches(request):
     return render(request, 'teacher_patches.html')
+
+
 
 
 def make_submission(request):
@@ -141,16 +150,25 @@ def make_submission(request):
     return render(request, 'make_submission.html', context={'form': form})
 
 
-def patch(request):
-    return render(request, 'patch.html')
+def assignment_view(request, pk):
+    assignment = Assignment.objects.get(pk = pk)
+    
+    return render(request, 'assignment_view.html', context = { 'assignment': assignment})
 
 
-def assessment(request):
-    return render(request, 'assessment.html')
 
+def give_feedback(request, pk):
+    user = Student.objects.get(user = request.user)
+    own_group = user.group
+    group_members = Student.objects.filter(group = own_group)
 
-def give_feedback(request):
-    return render(request, 'give_feedback.html')
+    return render(request, 'give_feedback.html', context = {
+        'group_members' : group_members
+    })
+
+def group_submission(request, groupmember_id):
+    assignment = request.assignment()
+    submission = Submission.objects
 
 
 def view_feedback(request):
@@ -158,4 +176,5 @@ def view_feedback(request):
 
 
 def student_home(request):
-    return render(request, 'student_home.html')
+    assignments = Assignment.objects.all()
+    return render(request, 'student_home.html', context = {'assignments':assignments})

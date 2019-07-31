@@ -7,20 +7,22 @@ import django.utils.timezone
 
 
 class User(AbstractUser):
-    
-   
-    is_student = models.BooleanField('student', default=False)
-    is_teacher = models.BooleanField('teacher', default=False)
     email = models.CharField(max_length =100, default = '') 
+    is_teacher = models.BooleanField(default = False)
+    is_student = models.BooleanField(default = False)
     
 
+class Student(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE)
+    group = models.IntegerField()
 
 
 class Assignment(models.Model):
-    assignment_title = models.CharField(max_length=100, primary_key=True)
+    assignment_title = models.CharField(max_length=100, default = '')
     assignment_description = models.TextField()
     submission_date = models.DateTimeField()
     peer_review_date = models.DateTimeField()
+
     
     
 
