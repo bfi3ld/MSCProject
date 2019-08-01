@@ -132,15 +132,17 @@ def teacher_patches(request):
 
 
 
-def make_submission(request):
+def make_submission(request, pk):
     if request.method == 'POST':
         form = SubmissionForm(request.POST)
 
         if form.is_valid():
             submission = form.save(commit=False)
-            submission.student = request.user
+            submission.student = Student.objects.get(user = request.user)
+            submission.assignment = Assignment.objects.get(id = pk)
             submission.published_date = datetime.now()
             submission.save()
+            return redirect('assignment_view', pk = pk)
 
         else:
             print(form.errors)
@@ -153,7 +155,11 @@ def make_submission(request):
 def assignment_view(request, pk):
     assignment = Assignment.objects.get(pk = pk)
     
-    return render(request, 'assignment_view.html', context = { 'assignment': assignment})
+    submission = Submission.objects.get(student__user = request.user)
+    
+    return render(request, 'assignment_view.html', context = { 
+        'assignment': assignment, 
+        'submission': submission })
 
 
 
@@ -161,17 +167,23 @@ def give_feedback(request, pk):
     user = Student.objects.get(user = request.user)
     own_group = user.group
     group_members = Student.objects.filter(group = own_group)
+    assignment = Assignment.objects.get(id = pk)
+    
+    submissions = Submission.objects.filter( assignment__id = pk, student__in = group_members )
 
     return render(request, 'give_feedback.html', context = {
-        'group_members' : group_members
+        'submissions' : submissions,
+        'assignment' : assignment
+
+        
     })
 
-def group_submission(request, groupmember_id):
-    assignment = request.assignment()
-    submission = Submission.objects
+def group_submission(request, id, pk):
+    assignment = Assignment.objects.get(pk = pk)
+    
+    return render(request, 'group_submission.html', context = {'assignment' : assignment})
 
-
-def view_feedback(request):
+def view_feedback(request, pk):
     return render(request, 'view_feedback.html')
 
 

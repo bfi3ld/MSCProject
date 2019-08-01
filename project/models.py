@@ -31,7 +31,7 @@ class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
     content = models.TextField()  # ('content', default = "")
     published_date = models.DateTimeField(blank=True, null=True)
-    student = models.ForeignKey(User, on_delete=models.CASCADE)
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
 
 
 class Peer_rubrik(models.Model):

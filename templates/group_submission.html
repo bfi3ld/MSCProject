@@ -4,14 +4,24 @@
 
 
 {% block import_block %}
-<link rel="stylesheet" href="{% static 'css/give_feedback.css' %}">
+<link rel="stylesheet" href="{% static 'css/group_submission.css' %}">
 
     {% endblock %}
 
     {% block content %}
 
  
-     {% endfor %}
+    <div class = "page_content">
+ 
+            <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
+        
+          
+                <div class = "menu_bar">
+                    <a class = "box_link" id = "submission" href = "{% url 'assignment_view' assignment.id %}"> <h3>Submission</h3></a>
+                    <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' assignment.id %}"><h3>Give feedback</h3></a>
+                    <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
+                    
+                </div>
    
-</div>
+
 {% endblock %}
