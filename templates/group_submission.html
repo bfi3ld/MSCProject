@@ -13,15 +13,48 @@
  
     <div class = "page_content">
  
-            <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
+            
         
           
                 <div class = "menu_bar">
+                    <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
                     <a class = "box_link" id = "submission" href = "{% url 'assignment_view' assignment.id %}"> <h3>Submission</h3></a>
                     <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' assignment.id %}"><h3>Give feedback</h3></a>
                     <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
                     
                 </div>
+
+
+        <div class = "submission_container">
+            <div class = "submission"> <h3>{{ submission.student.user.username }}</h3>{{ submission.content }} <button class = "give_feedback">Give feedback</button></div>
+            
+            <div class = "feedback_container">
+
+                {% for review in peer_review %}
+                {{ review.review}}
+                {% endfor %}
+                
+                {% if peer_rubrik %}
+               {% for rubrik in peer_rubrik %}
+        
+                <div class = "instruction">
+                {{ rubrik.instruction }}
+                </div>
+                <form action="{% url 'submit_peer_review' assignment.id submission.id rubrik.id %}" class = "form" method="post">
+                        {% csrf_token %}
+                {{ form }}
+                <input type="submit" name="submit"/>
+        </form>
+                {% endfor %}
+                {% endif %}
+
+               
+              
+            
+
+            </div>
+        </div>
+        </div>
    
 
 {% endblock %}

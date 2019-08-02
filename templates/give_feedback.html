@@ -11,18 +11,21 @@
 {% block content %}
 
 <div class = "page_content">
- 
-        <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
+        
 
   
         <div class = "menu_bar">
+                <div class = "title"><h3>{{ assignment.assignment_title }}</h3></div>
             <a class = "box_link" id = "submission" href = "{% url 'assignment_view' assignment.id %}"> <h3>Submission</h3></a>
             <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' assignment.id %}"><h3>Give feedback</h3></a>
             <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
             
         </div>
 
- <div  class = "page_content">
+
+     <div class = "group_display">
+         <div class = "group">
+        
         {% if submissions %}
         {% for s in submissions %}
             <div class = "member">
@@ -33,7 +36,8 @@
      
             <h3>No submissions yet</h3>
         {% endif %}
- 
+    </div>
+    </div>
 
    
 </div>

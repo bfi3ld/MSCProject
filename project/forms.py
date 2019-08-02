@@ -1,6 +1,6 @@
 from django import forms
 from project.models import User
-from project.models import Submission, User, Assignment, Student  # , Peer_rubrik
+from project.models import Submission, User, Assignment, Student, Peer_review_rubrik, Peer_review_submission
 from tinymce.widgets import TinyMCE
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
@@ -71,9 +71,18 @@ class CreateAssignmentForm(forms.ModelForm):
         model = Assignment
         fields = ('assignment_title', 'assignment_description', 'submission_date', 'peer_review_date')
 
-# class CreateRubrikForm(forms.ModelForm):
-#     class Meta:
-#         model = Peer_rubrik
-#         fields = ('peer_rubrik_text',)
+class CreateRubrikForm(forms.ModelForm):
+    instruction = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    class Meta:
+        model = Peer_review_rubrik
+        fields = ('instruction',)
+
+
+class PeerReviewForm(forms.ModelForm):
+    review = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    
+    class Meta:
+        model = Peer_review_submission
+        fields = ('review',)
 
 

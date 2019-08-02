@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block import_block %}
+<link rel="stylesheet" href="{% static 'css/assignment_view.css' %}">
+    {% endblock %}
+{% block content %}
+<div class = "page_content">
+ 
+    <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
+
+  
+   
+        <div class = "assignment_display">
+            <div class = "assignment"> <p>{{ assignment.assignment_description }}</p></div>
+            <a href = "{% url 'add_rubrik' assignment.id %}">Add peer-review rubrik</a>
+            {% if peer_rubrik %}
+            {% for p in peer_rubrik %}
+            <div class = "peer_rubrik">{{ p.instruction }}</div>
+            {% endfor %}
+            {% endif %}
+            
+</div>
+{% endblock %}
+
+{% block middle_content %}
+{% endblock %}

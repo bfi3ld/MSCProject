@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block import_block %}
+
+
+    {% endblock %}
+
+{% block content %}
+<div class = "form_container">
+<form action = "" class = "form" method="post">
+        {% csrf_token %}
+        {{ form }}
+       
+      
+        <input type="submit" name="submit"/>
+        </form>
+</div>
+
+{% endblock %}
