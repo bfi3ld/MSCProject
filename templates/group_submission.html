@@ -31,7 +31,10 @@
             <div class = "feedback_container">
 
                 {% for review in peer_review %}
+                <div class = "review">
+                <h3>{{ review.author.user.username }}</h3>
                 {{ review.review}}
+                </div>
                 {% endfor %}
                 
                 {% if peer_rubrik %}
@@ -40,11 +43,13 @@
                 <div class = "instruction">
                 {{ rubrik.instruction }}
                 </div>
+                
                 <form action="{% url 'submit_peer_review' assignment.id submission.id rubrik.id %}" class = "form" method="post">
                         {% csrf_token %}
                 {{ form }}
                 <input type="submit" name="submit"/>
-        </form>
+                 </form>
+              
                 {% endfor %}
                 {% endif %}
 

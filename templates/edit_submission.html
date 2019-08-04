@@ -21,24 +21,11 @@
             <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
             
         </div>
-
-
-     <div class = "group_display">
-         <div class = "group">
-        
-        {% if submissions %}
-        {% for s in submissions %}
-            <div class = "member">
-                <div class = member_name><a href = "{% url 'group_submission' assignment.id s.id  %}"><h3>{{ s.student.user.username }}</h3></a></div>
-            </div>
-        {% endfor %}
-        {% else %}
-     
-            <h3>No submissions yet</h3>
-        {% endif %}
-    </div>
-    </div>
-
-   
-</div>
+        <form action = "" class = "form" method="post">
+                {% csrf_token %}
+                {{ form }}
+               
+              
+                <input type="submit" name="submit"/>
+                </form>
 {% endblock %}

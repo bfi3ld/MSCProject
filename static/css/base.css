@@ -84,3 +84,19 @@ h2 {
     height: 100%;
 
 }
+
+.menu_bar {
+    display:flex;
+    
+    align-items:center;
+    justify-content:space-evenly;
+    width:100%;
+    background-color:rgba(107,122,143, 0.3);
+    height:50px;
+   
+}
+.box_link {
+    
+padding:10px;
+
+}

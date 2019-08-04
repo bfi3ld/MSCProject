@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from project.forms import *
+from project.edits import *
 from django.utils.timezone import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
@@ -89,6 +90,7 @@ def add_student(request):
 def add_assignment(request):
     if request.method == 'POST':
         assignment_form = CreateAssignmentForm(request.POST)
+        final_assignment = Assignment.objects.getOrCreate()
         
 
         if assignment_form.is_valid():
@@ -142,11 +144,11 @@ def teacher_home(request):
             row_content.append(cell_content)
         table_content.append(row_content)
 
-        context = {'table_content': table_content,
+        
+    return render(request, 'teacher_home.html', context = {'table_content': table_content,
                     'assignments': assignments,
                     'students' : students
-                    }
-    return render(request, 'teacher_home.html', context)
+                    })
 
 
 def teacher_assignment_view(request, pk):
@@ -178,6 +180,7 @@ def make_submission(request, pk):
             submission.student = Student.objects.get(user = request.user)
             submission.assignment = Assignment.objects.get(id = pk)
             submission.published_date = datetime.now()
+            submission.is_original = True
             submission.save()
             return redirect('assignment_view', pk = pk)
 
@@ -187,6 +190,37 @@ def make_submission(request, pk):
         form = SubmissionForm()
 
     return render(request, 'make_submission.html', context={'form': form})
+
+def edit_submission(request, pk):
+    latest_submission = Submission.objects.get(assignment = pk, student = Student.objects.get(user = request.user), is_original = False)
+    assignment = Assignment.objects.get(id = pk)
+    if request.method == 'POST':
+        
+        form = EditSubmissionForm(request.POST)
+        if form.is_valid():
+            updated_submission = form.cleaned_data['edited_content']
+            deltas = edits.get_difference(latest_submission, updated_submission)
+            submission_edits = Submission_edits(delta = deltas, datetime = datetime.now())
+            
+            latest_submission(content = edited_content)
+            latest_submission.save()
+            return redirect('view_feedback')
+        
+    else:
+        form = EditSubmissionForm()
+    
+    return render(request, 'edit_submission.html', context={
+        'form': form,
+        'latest_submission' : latest_submission,
+        'assignment' : assignment
+    })
+
+
+            
+
+
+
+
 
 
 def assignment_view(request, pk):
@@ -208,10 +242,11 @@ def give_feedback(request, pk):
     own_group = user.group
     group_members = Student.objects.filter(group = own_group).exclude(user = request.user)
     
+    
     assignment = Assignment.objects.get(id = pk)
     
     submissions = Submission.objects.filter( assignment__id = pk, student__in = group_members )
-
+    print(submissions)
     return render(request, 'give_feedback.html', context = {
         'submissions' : submissions,
         'assignment' : assignment
@@ -219,23 +254,24 @@ def give_feedback(request, pk):
         
     })
 
-def group_submission(request, id, pk):
+def group_submission(request, pk, subid):
+    print(request.user)
     assignment = Assignment.objects.get(pk = pk)
-    submission = Submission.objects.get(id = id)
-    author = Student.objects.get(user = request.user)
+    submission = Submission.objects.get(id = subid)
+    print(submission)
+    author = request.user
     
 
   
     
-    peer_review = Peer_review_submission.objects.filter(author = author, submission = submission)
-    peer_rubrik = Peer_review_rubrik.objects.filter(assignment = assignment).exclude(id__in= peer_review)
-    #peer_rubrik = peer_rubrik.exclude(id__in = peer_review)
+    peer_review = Feedback.objects.filter(author = author, submission = submission)
+    peer_review_id = peer_review.values('peer_review_rubrik')
+    peer_rubrik = Peer_review_rubrik.objects.filter(assignment = assignment).exclude(id__in = peer_review_id)
+    print(peer_review_id)
     
-
     
-    
-
     form = PeerReviewForm()
+   
     
     
     return render(request, 'group_submission.html', context = {
@@ -247,9 +283,9 @@ def group_submission(request, id, pk):
          })
 
 
-def submit_peer_review(request, id, pk, rubrik):
-    submission = Submission.objects.get(id = id)
-    author = Student.objects.get(user = request.user)
+def submit_peer_review(request, pk, subid, rubrik):
+    submission = Submission.objects.get(id = subid)
+    author = request.user
     peer_rubrik = Peer_review_rubrik.objects.get(id = rubrik)
     form = PeerReviewForm(request.POST)
 
@@ -261,12 +297,27 @@ def submit_peer_review(request, id, pk, rubrik):
         peer_review.date = datetime.now()
         peer_review.peer_review_rubrik = peer_rubrik
         peer_review.save()
-    return redirect('group_submission', pk = pk, id = id)
+    return redirect('group_submission', pk = pk, subid = subid)
 
 def view_feedback(request, pk):
-    return render(request, 'view_feedback.html')
+    
+    submission = Submission.objects.get(assignment = pk, student = Student.objects.get(user = request.user))
+    assignment = submission.assignment
+    peer_reviews = Feedback.objects.filter(submission = submission, author__is_student = True).order_by('peer_review_rubrik')
+    teacher_feedback = Feedback.objects.filter(submission = submission, author__is_teacher = True)
+    return render(request, 'view_feedback.html', context = {
+        'submission' : submission,
+        'assignment' : assignment,
+        'peer_reviews' : peer_reviews,
+        'teacher_feedback' : teacher_feedback
+    })
 
 
 def student_home(request):
+    a = "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    b = " Consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco absolut commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+    edits.get_difference(a, b)
     assignments = Assignment.objects.all()
     return render(request, 'student_home.html', context = {'assignments':assignments})
+
+

@@ -9,9 +9,10 @@ urlpatterns = [
     path('student_home', views.student_home, name = 'student_home'),
     path('student_home/assignment_view/<int:pk>', views.assignment_view, name = 'assignment_view'),
     path('student_home/assignment_view/<int:pk>/give_feedback', views.give_feedback, name='give_feedback'),
-    path('student_home/assignment_view/<int:pk>/give_feedback/group_submission/<int:id>', views.group_submission, name='group_submission'),
-    path('student_home/assignment_view/<int:pk>/give_feedback/group_submission/<int:id>/submit_peer_review/<int:rubrik>', views.submit_peer_review, name='submit_peer_review'),
+    path('student_home/assignment_view/<int:pk>/give_feedback/group_submission/<int:subid>', views.group_submission, name='group_submission'),
+    path('student_home/assignment_view/<int:pk>/give_feedback/group_submission/<int:subid>/submit_peer_review/<int:rubrik>', views.submit_peer_review, name='submit_peer_review'),
     path('student_home/assignment_view/<int:pk>/view_feedback', views.view_feedback, name='view_feedback'),
+    path('student_home/assignment_view/<int:pk>/view_feedback/edit_submission', views.edit_submission, name='edit_submission'),
     path('student_home/assignment_view/<int:pk>/make_submission', views.make_submission, name='make_submission'),
     path('teacher_home', views.teacher_home, name='teacher_home'),
     path('teacher_home/teacher_patches', views.teacher_patches, name='teacher_patches'),
@@ -19,4 +20,5 @@ urlpatterns = [
     path('teacher_home/teacher_assignment_view/<int:pk>/add_rubrik', views.add_rubrik, name = 'add_rubrik'),
     path('teacher_home/add_student', views.add_student, name = 'add_student'),
     path('teacher_home/add_assignment', views.add_assignment, name = 'add_assignment')
+    
 ]

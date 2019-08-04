@@ -32,17 +32,21 @@ class Submission(models.Model):
     content = models.TextField()  # ('content', default = "")
     published_date = models.DateTimeField(blank=True, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    is_original = models.BooleanField(default = False)
 
-
+class Submission_edits(models.Model):
+    original_submission = models.ForeignKey(Submission, on_delete = models.CASCADE)
+    delta = models.TextField()
+    date_time = models.DateTimeField()
 
 class Peer_review_rubrik(models.Model):
     instruction = models.TextField()
     assignment = models.ForeignKey(Assignment, on_delete = models.CASCADE)
 
 
-class Peer_review_submission(models.Model):
+class Feedback(models.Model):
     peer_review_rubrik = models.ForeignKey('Peer_review_rubrik', on_delete=models.CASCADE, null = True)
     submission = models.ForeignKey('Submission', on_delete = models.CASCADE)
     review = models.TextField()
-    author = models.ForeignKey(Student, on_delete = models.CASCADE)
+    author = models.ForeignKey(User, on_delete = models.CASCADE)
     date = models.DateField()
