@@ -1,6 +1,6 @@
 import difflib
 
-class edits():
+class Edits():
 
     def get_difference(text_1, text_2):
         text1 = text_1.split(".")

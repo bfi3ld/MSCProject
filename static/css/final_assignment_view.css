@@ -1,0 +1,35 @@
+.page_content {
+    width:100%;
+    height:100%;
+    
+}
+
+.final_assignment_display {
+    width: 100%;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding:30px;
+    margin-top:20px;
+
+
+}
+
+.past_submissions {
+    width:100%;
+    display:flex;
+    padding:10%;
+    
+}
+.individual_submission {
+    width:400px;
+    height:300px;
+    overflow:hidden;
+    background-color:white;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding:10px;
+}
+
+h3 {
+    font-size:20px;
+  
+}

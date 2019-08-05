@@ -8,14 +8,13 @@
 <h1>My timeline</h1>
 <div class="patchwork">
 	{% for a in assignments %}
-
         <a class="patches" href = "{% url 'assignment_view' a.id %}">{{ a.assignment_title}}</a>
-					
-					<div class = "timeline"></div>
-					
-               
-				{% endfor %}
-			</div>
+	{% endfor %}
+
+	<a class="patches" href = "{% url 'assignment_view' final_assignment.id %}">{{ final_assignment.assignment_title }}</a>
+
+	<div class = "timeline"></div>
+</div>
 	
 	
 			

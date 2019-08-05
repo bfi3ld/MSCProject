@@ -24,7 +24,7 @@ class SubmissionForm(forms.ModelForm):
         fields = ['content']
 
 class EditSubmissionForm(forms.Form):
-    edited_content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
     
 
 

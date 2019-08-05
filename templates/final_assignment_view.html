@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block import_block %}
+<link rel="stylesheet" href="{% static 'css/final_assignment_view.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="page_content">
+    <div class="final_assignment_display">
+        {{ assignment.assignment_title }}
+        {{ assignment.assignment_description }}
+    </div>
+    <div class="past_submissions">
+        <form action="{% url 'stitch_patches' %}" class="form" method="post">
+            {% csrf_token %}
+
+            {% for s in submissions %}
+            <div class="individual_submission">
+                <input type="checkbox" name="{{ s.id }}" value="{{ s.id }}">
+                <h3>{{ s.assignment.assignment_title }}</h3>
+                <p>{{ s.content }}</p>
+
+            </div>
+            {% endfor %}
+
+            <input type="submit" value="Submit">
+        </form>
+
+
+
+    </div>
+
+</div>
+{% endblock %}

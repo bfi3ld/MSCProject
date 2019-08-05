@@ -7,9 +7,18 @@ from .models import User
 
 from . import models
 
-admin.site.register(models.Submission)
+
+class SubmissionAdmin(admin.ModelAdmin):
+    list_display = ('id', 'assignment', 'student', 'content')
+
+class Submission_editsAdmin(admin.ModelAdmin):
+    list_display = ('id', 'submission', 'date_time')
+
+
+admin.site.register(models.Submission, SubmissionAdmin)
 admin.site.register(models.User)
 admin.site.register(models.Assignment)
 admin.site.register(models.Student)
 admin.site.register(models.Peer_review_rubrik)
 admin.site.register(models.Feedback)
+admin.site.register(models.Submission_edits, Submission_editsAdmin)

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block import_block %}
+<link rel="stylesheet" href="{% static 'css/stitch_patches.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="page_content">
+    {% for s in submissions %}
+        <h3>{{ s.content }}</h3>
+        {% for se in submission_edits %}
+            {% if se.submission.id == s.id %}
+                <p>{{ se.delta }}</p><br>
+            {% endif %}
+        {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}

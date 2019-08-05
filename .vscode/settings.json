@@ -2,5 +2,7 @@
     "python.pythonPath": "C:\\Users\\Hanna\\Anaconda3\\envs\\project\\python.exe",
     "python.linting.enabled": false,
     "python.linting.pylintEnabled": false,
-    "python.linting.flake8Enabled": true
+    "python.linting.flake8Enabled": false,
+    "python.linting.pep8Enabled": true,
+    "python.formatting.provider": "autopep8"
 }
