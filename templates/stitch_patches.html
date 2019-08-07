@@ -7,13 +7,37 @@
 
 {% block content %}
 <div class="page_content">
+    <div class = "submission_history">
     {% for s in submissions %}
-        <h3>{{ s.content }}</h3>
+    
+    
+        
         {% for se in submission_edits %}
             {% if se.submission.id == s.id %}
-                <p>{{ se.delta }}</p><br>
+                <div class = "edit">
+                    <div class = "edit_border">
+                    
+                    <h4>Edited on {{ se.date_time }}<icon class = "plus">+</icon></h4>
+                    </div>
+                    <div class = "collapsable">
+                    <div class = "deleted">
+                        <h5>Deleted</h5>
+                        {{ se.deleted }}
+                    </div>
+                    <div class = "added">
+                        <h5>Added</h5>
+                        {{ se.added }}
+                    </div>
+                </div>
+                </div>
             {% endif %}
-        {% endfor %}
+            {% endfor %}
+
+            {{ s.content }}
+           
+           
     {% endfor %}
+
+</div>
 </div>
 {% endblock %}

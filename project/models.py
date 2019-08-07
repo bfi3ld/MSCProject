@@ -33,7 +33,8 @@ class Submission(models.Model):
 
 class Submission_edits(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
-    delta = models.TextField()
+    deleted = models.TextField(null = True)
+    added = models.TextField(null = True)
     date_time = models.DateTimeField()
 
 

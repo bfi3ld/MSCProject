@@ -22,7 +22,10 @@
         {% if submission %}
         <p> {{ submission.content }}
             </p>
+            <a href = "{% url 'edit_submission' assignment.id %}">Edit submission</a>
             {% endif %}
+
+            
     </div>
     <div class = "peer_feedback">
     {% if peer_reviews %}

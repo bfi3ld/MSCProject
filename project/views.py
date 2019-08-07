@@ -191,19 +191,43 @@ def make_submission(request, pk):
 
 
 def edit_submission(request, pk):
-    latest_submission = Submission.objects.get(
-        assignment=pk, student=Student.objects.get(user=request.user), is_original=False)
-    assignment = Assignment.objects.get(id=pk)
+    assignment = Assignment.objects.get(pk = pk)
+
+    latest_submission, created = Submission.objects.get_or_create(
+        assignment=assignment, student=Student.objects.get(user=request.user), is_original = False)
+    print(latest_submission)
+    if created:
+   
+        old_content = Submission.objects.get(assignment=assignment, student=Student.objects.get(user=request.user), is_original = True)
+        
+        latest_submission.content = old_content.content
     if request.method == 'POST':
         form = EditSubmissionForm(request.POST)
         if form.is_valid():
             updated_submission = form.cleaned_data['content']
             deltas = Edits.get_difference(
                 latest_submission.content, updated_submission)
+
+            text_1 = latest_submission.content.split(".")
+            text_2 = updated_submission.split(".")
+            is_added = False
+            string_deleted = ''
+            string_added = ''
+            lib = difflib.Differ()
+            for line in lib.compare(text_1,text_2):
+                if line.startswith('+'):
+                   string_added += line + '\n'
+                elif line.startswith('-'):
+                    string_deleted += line + '\n'
+                
+            
+            print(string_added)
+            print(string_deleted)
             submission_edits = Submission_edits(
-                delta=deltas, date_time=datetime.now(), submission=latest_submission)
+                deleted = string_deleted, added = string_added, date_time=datetime.now(), submission=latest_submission)
             submission_edits.save()
             latest_submission.content = updated_submission
+            latest_submission.published_date = datetime.now()
             latest_submission.save()
             return redirect('view_feedback', pk=pk)
 
@@ -222,18 +246,11 @@ def assignment_view(request, pk):
     assignment = Assignment.objects.get(pk=pk)
 
     try:
-        submission = Submission.objects.get(student__user=request.user)
+        submission = Submission.objects.get(assignment = assignment, student__user=request.user, is_original = True)
     except Submission.DoesNotExist:
         submission = None
 
-    try:
-        edits = Submission_edits.objects.filter(submission=submission)
-        for e in edits:
-            deleted = [d for d in e.delta if d.startswith("-")]
-            added = [d for d in e.delta if d.startswith("+")]
-
-    except Submission_edits.DoesNotExist:
-        edits = None
+    
 
     return render(request, 'assignment_view.html', context={
         'assignment': assignment,
@@ -310,8 +327,10 @@ def submit_peer_review(request, pk, subid, rubrik):
 
 
 def view_feedback(request, pk):
-    submission = Submission.objects.get(
-        assignment=pk, student=Student.objects.get(user=request.user))
+   
+    submission = Submission.objects.filter(
+        assignment=pk, student=Student.objects.get(user=request.user)).latest('id')
+    
     assignment = submission.assignment
     peer_reviews = Feedback.objects.filter(
         submission=submission, author__is_student=True).order_by('peer_review_rubrik')
@@ -337,6 +356,7 @@ def stitch_patches(request):
     submission_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
     submissions = Submission.objects.filter(id__in=submission_ids)
     submission_edits = Submission_edits.objects.filter(submission__id__in=submission_ids)
+
     
     return render(request, 'stitch_patches.html', context={
         'submissions': submissions,
