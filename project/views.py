@@ -9,6 +9,7 @@ from project.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib import messages
+from diff_match_patch import diff_match_patch
 
 
 # Create your views here.
@@ -195,7 +196,7 @@ def edit_submission(request, pk):
 
     latest_submission, created = Submission.objects.get_or_create(
         assignment=assignment, student=Student.objects.get(user=request.user), is_original = False)
-    print(latest_submission)
+    
     if created:
    
         old_content = Submission.objects.get(assignment=assignment, student=Student.objects.get(user=request.user), is_original = True)
@@ -205,30 +206,69 @@ def edit_submission(request, pk):
         form = EditSubmissionForm(request.POST)
         if form.is_valid():
             updated_submission = form.cleaned_data['content']
-            deltas = Edits.get_difference(
-                latest_submission.content, updated_submission)
 
-            text_1 = latest_submission.content.split(".")
-            text_2 = updated_submission.split(".")
-            is_added = False
-            string_deleted = ''
-            string_added = ''
-            lib = difflib.Differ()
-            for line in lib.compare(text_1,text_2):
-                if line.startswith('+'):
-                   string_added += line + '\n'
-                elif line.startswith('-'):
-                    string_deleted += line + '\n'
+            text1 = latest_submission.content
+            text2 = updated_submission
+
+            dmp = diff_match_patch()
+            diffs = dmp.diff_main(text1,text2)
+           
+            #text = dmp.patch_toText(diffs)
+
+            
+
+
+             
+            html = dmp.diff_prettyHtml(diffs)
+
+            
+            #array = text.split(")(")
+            text_string = ""
+            
+            
+            # for a in array:
+            #     if a.startswith("("):
+            #         a = a.replace("(","", 1)
+                    
+               
+            #     if a.startswith("0"):
+            #         text_string+=a
+                    
+                  
+            #     elif a.startswith("1"):
+            #         text_string += "\n" + "+++ " + a
+                   
+
+            #     elif a.startswith("-1"):
+            #         text_string += a + '\u0336'
+            print(html)
+
+          
+                 
+
+                
+
+            #text_1 = latest_submission.content.split(".")
+            #text_2 = updated_submission.split(".")
+            #is_added = False
+            #string_deleted = ''
+            #string_added = ''
+            #lib = difflib.Differ()
+            #comparing = lib.compare(text_1,text_2)
+            #for line in comparing:
+             #   print(line)
+              #  if line.startswith('+'):
+               #    string_added += line + '\n'
+               # elif line.startswith('-'):
+                #    string_deleted += line + '\n'
                 
             
-            print(string_added)
-            print(string_deleted)
-            submission_edits = Submission_edits(
-                deleted = string_deleted, added = string_added, date_time=datetime.now(), submission=latest_submission)
-            submission_edits.save()
-            latest_submission.content = updated_submission
-            latest_submission.published_date = datetime.now()
-            latest_submission.save()
+            #submission_edits = Submission_edits(
+            #    deleted = diff, added = patches, date_time=datetime.now(), submission=latest_submission)
+            #submission_edits.save()
+            #latest_submission.content = updated_submission
+            #latest_submission.published_date = datetime.now()
+            #latest_submission.save()
             return redirect('view_feedback', pk=pk)
 
     else:
@@ -354,10 +394,15 @@ def student_home(request):
 
 def stitch_patches(request):
     submission_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
-    submissions = Submission.objects.filter(id__in=submission_ids)
+    latest_submissions = Submission.objects.filter(id__in=submission_ids)
+    assignments = latest_submissions.values('assignment')
+    original_submissions = Submission.objects.filter(student__user = request.user, assignment__in = assignments, is_original = True)
+   
+    submissions =  zip(original_submissions, latest_submissions)
     submission_edits = Submission_edits.objects.filter(submission__id__in=submission_ids)
-
+   
     
     return render(request, 'stitch_patches.html', context={
         'submissions': submissions,
         'submission_edits': submission_edits})
+    

@@ -25,7 +25,7 @@ class Assignment(models.Model):
 
 class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE)
-    content = models.TextField()  # ('content', default = "")
+    content = models.TextField()  
     published_date = models.DateTimeField(blank=True, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     is_original = models.BooleanField(default=False)
@@ -50,3 +50,25 @@ class Feedback(models.Model):
     review = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
+
+
+class Script_judgement(models.Model):
+    script_a = models.ForeignKey('Script', related_name = 'script_a', on_delete = models.CASCADE)
+    script_b = models.ForeignKey('Script',related_name = 'script_b', on_delete = models.CASCADE)
+    winner = models.ForeignKey('Script', on_delete = models.CASCADE)
+    what_round = models.OneToOneField('Round', on_delete = models.CASCADE)
+    judge = models.ForeignKey('User', on_delete = models.CASCADE)
+    date_time = models.DateTimeField()
+
+
+class Script(models.Model):
+    script = models.OneToOneField('Submission', on_delete = models.CASCADE)
+    score = models.IntegerField()
+    value = models.IntegerField()
+
+class Round(models.Model):
+    assignment = models.ForeignKey('Assignment', on_delete = models.CASCADE)
+    what_round = models.IntegerField()
+    reliability = models.IntegerField()
+
+
