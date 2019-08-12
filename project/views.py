@@ -405,4 +405,17 @@ def stitch_patches(request):
     return render(request, 'stitch_patches.html', context={
         'submissions': submissions,
         'submission_edits': submission_edits})
-    
+
+
+
+
+#Function that initiates a new judgement session.
+def create_new_judgesession(request, pk):
+    session, created = Round.objects.get_or_create(assignment__id = pk)
+    if created:
+        
+        
+        
+
+
+
