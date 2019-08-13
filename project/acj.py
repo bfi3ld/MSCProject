@@ -16,7 +16,9 @@ def update_values(script_id):
         information +=  ((calc_probability(value - s.value)) * (1 - (calc_probability(value - s.value))
 
     
-    script.value = value + (score - expected_score) / information
+    script_value = value + ((score - expected_score) / information)
+
+    return script_value
 
 
 

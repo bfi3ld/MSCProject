@@ -1,2 +1,44 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
 {% load staticfiles %}
+
+<html lang="en"></html>
+
+<html>
+
+<head>
+        <link rel="stylesheet" href="{% static 'css/acj_view.css' %}">
+        
+        
+
+
+        
+        <nav>Quit session</nav>         
+</head>
+
+<body>
+        
+<div class = "page">
+    <div class = "page_content">
+    
+    <div class = "script_container">
+        <div class ="script">
+            {{ next_pair.script_a.script.content }}
+        </div>
+        <div class ="selection"><a href = "{% url 'generate_pair' next_pair.assignment.id next_pair.id next_pair.script_a.id %}">Script a is better</a>
+        </div>
+
+    </div>
+    <div class = "script_container">
+        <div class ="script">
+            {{ next_pair.script_b.script.content }}
+        </div>
+        <div class ="selection"><a href = "{% url 'generate_pair' next_pair.assignment.id next_pair.id next_pair.script_b.id %}">Script b is better</a>
+        </div>
+    </div>
+</div>
+
+
+</div>
+</body>
+</html>
+

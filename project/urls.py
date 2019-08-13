@@ -23,6 +23,6 @@ urlpatterns = [
     path('teacher_home/add_student', views.add_student, name = 'add_student'),
     path('teacher_home/add_assignment', views.add_assignment, name = 'add_assignment'),
     path('teacher_home/teacher_assignment_view/<int:pk>/new_judge_session', views.new_judge_session, name = 'new_judge_session'),
-    path('teacher_home/teacher_assignment_view/<int:pk>/acj/<int:int_round>', views.generate_pair, name = 'generate_pair')
+    path('teacher_home/teacher_assignment_view/<int:pk>/acj/<int:pair_id>/<int:winner>', views.generate_pair, name = 'generate_pair')
     
 ]

@@ -416,9 +416,7 @@ def new_judge_session(request, pk):
     submissions = Submission.objects.filter(assignment__id = pk, is_original = True)
     scripts = (Script.objects.create(script=s) for s in submissions)
     
-    int_round = 1
    
-    
     try:
         iterator = iter(scripts)
         for i in iterator:
@@ -426,15 +424,36 @@ def new_judge_session(request, pk):
     except StopIteration:
         missing_script = Judgement.objects.latest('id')
         missing_script.script_b = scripts.first()
+    
+    next_pair = Judgement.objects.all()[0]
+    pair_id = next_pair.id
 
-    return redirect('generate_pair', pk=pk, int_round=int_round)
+    return redirect('generate_pair', pk=pk, pair_id = pair_id, winner = 0)
  
+#Hanna! create a function to automatically update script score values when a winner is selected.
+def generate_pair(request, pk, pair_id, winner):
+    
+    current_pair = Judgement.objects.get(id = pair_id)
+    this_round = current_pair.what_round
+    if winner != 0:
+        next_pair = Judgement.objects.filter(assignment__id = pk,what_round = this_round, winner__isnull = True)[0]
+        this_winner = Script.objects.get(id = winner)
+        if next_pair:
+            
+            current_pair.winner = this_winner
+            
 
-def generate_pair(request, pk, int_round):
-    assignment = Assignment.objects.get(id = pk)
-    this_round = Round.objects.get(what_round = int_round)
-    next_pair = Judgement.objects.filter(assignment = assignment,what_round = this_round, winner__isnull = True)[0]
+        else:
+            current_pair.winner = None if (Script.objects.all().count()%2 != 0 and this_winner == current_pair.script_b) else this_winner
+           
+            return redirect('log_in')
+    
+    else:
 
+        next_pair = current_pair
+    
+    
+    
     return render(request, 'acj_view.html', context = { 'next_pair' : next_pair})
 
 

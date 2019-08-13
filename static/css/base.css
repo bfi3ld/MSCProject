@@ -2,7 +2,7 @@ nav {
     background-color:#6B7A8F;
 
     
-    height:90px;
+    height:50px;
     margin:0;
     padding:0;
     
@@ -92,7 +92,7 @@ h2 {
     justify-content:space-evenly;
     width:100%;
     background-color:rgba(107,122,143, 0.3);
-    height:50px;
+    height:30px;
    
 }
 .box_link {
