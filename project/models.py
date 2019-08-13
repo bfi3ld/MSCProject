@@ -51,24 +51,26 @@ class Feedback(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
 
-
-class Script_judgement(models.Model):
+#Script b is set to null=True so one duplicate script can be added after object is created, if the scripts are
+#odd numbered.
+class Judgement(models.Model):
+    assignment = models.ForeignKey('Assignment', on_delete = models.CASCADE)
     script_a = models.ForeignKey('Script', related_name = 'script_a', on_delete = models.CASCADE)
-    script_b = models.ForeignKey('Script',related_name = 'script_b', on_delete = models.CASCADE)
-    winner = models.ForeignKey('Script', on_delete = models.CASCADE)
-    what_round = models.OneToOneField('Round', on_delete = models.CASCADE)
+    script_b = models.ForeignKey('Script',related_name = 'script_b', on_delete = models.CASCADE, null = True)
+    winner = models.ForeignKey('Script', on_delete = models.CASCADE, null = True)
+    what_round = models.ForeignKey('Round', on_delete = models.CASCADE)
     judge = models.ForeignKey('User', on_delete = models.CASCADE)
     date_time = models.DateTimeField()
 
 
 class Script(models.Model):
     script = models.OneToOneField('Submission', on_delete = models.CASCADE)
-    score = models.IntegerField()
-    value = models.IntegerField()
+    score = models.IntegerField(null = True)
+    value = models.IntegerField(null = True)
 
 class Round(models.Model):
     assignment = models.ForeignKey('Assignment', on_delete = models.CASCADE)
-    what_round = models.IntegerField()
-    reliability = models.IntegerField()
+    what_round = models.IntegerField(null = True)
+    reliability = models.IntegerField(null = True)
 
 

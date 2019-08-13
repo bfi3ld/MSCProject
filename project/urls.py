@@ -21,6 +21,8 @@ urlpatterns = [
     path('teacher_home/teacher_assignment_view/<int:pk>', views.teacher_assignment_view, name = 'teacher_assignment_view'),
     path('teacher_home/teacher_assignment_view/<int:pk>/add_rubrik', views.add_rubrik, name = 'add_rubrik'),
     path('teacher_home/add_student', views.add_student, name = 'add_student'),
-    path('teacher_home/add_assignment', views.add_assignment, name = 'add_assignment')
+    path('teacher_home/add_assignment', views.add_assignment, name = 'add_assignment'),
+    path('teacher_home/teacher_assignment_view/<int:pk>/new_judge_session', views.new_judge_session, name = 'new_judge_session'),
+    path('teacher_home/teacher_assignment_view/<int:pk>/acj/<int:int_round>', views.generate_pair, name = 'generate_pair')
     
 ]

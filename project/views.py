@@ -5,7 +5,7 @@ from project.edits import *
 from django.utils.timezone import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
-from project.models import User
+from project.models import *
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib import messages
@@ -410,9 +410,41 @@ def stitch_patches(request):
 
 
 #Function that initiates a new judgement session.
-def create_new_judgesession(request, pk):
-    session, created = Round.objects.get_or_create(assignment__id = pk)
-    if created:
+def new_judge_session(request, pk):
+    assignment = Assignment.objects.get(id = pk)
+    first_round = Round.objects.create(assignment = assignment, what_round = 1)
+    submissions = Submission.objects.filter(assignment__id = pk, is_original = True)
+    scripts = (Script.objects.create(script=s) for s in submissions)
+    
+    int_round = 1
+   
+    
+    try:
+        iterator = iter(scripts)
+        for i in iterator:
+            Judgement.objects.create(assignment = assignment, what_round = first_round, judge = request.user, date_time = datetime.now(), script_a = i, script_b = next(iterator))
+    except StopIteration:
+        missing_script = Judgement.objects.latest('id')
+        missing_script.script_b = scripts.first()
+
+    return redirect('generate_pair', pk=pk, int_round=int_round)
+ 
+
+def generate_pair(request, pk, int_round):
+    assignment = Assignment.objects.get(id = pk)
+    this_round = Round.objects.get(what_round = int_round)
+    next_pair = Judgement.objects.filter(assignment = assignment,what_round = this_round, winner__isnull = True)[0]
+
+    return render(request, 'acj_view.html', context = { 'next_pair' : next_pair})
+
+
+
+
+
+
+        
+
+
         
         
         
