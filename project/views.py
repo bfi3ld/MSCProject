@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from project.forms import *
-from project.edits import *
+from project.acj import update_values,calc_probability
 from django.utils.timezone import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
@@ -135,7 +135,7 @@ def teacher_home(request):
         for a in assignments:
             try:
                 sub = Submission.objects.get(
-                    student__id=s.id, assignment_id=a.id)
+                    student__id=s.id, assignment_id=a.id, is_original = True)
                 if sub.published_date <= a.submission_date:
                     cell_content = 'on time'
                 else:
@@ -414,47 +414,103 @@ def new_judge_session(request, pk):
     assignment = Assignment.objects.get(id = pk)
     first_round = Round.objects.create(assignment = assignment, what_round = 1)
     submissions = Submission.objects.filter(assignment__id = pk, is_original = True)
-    scripts = (Script.objects.create(script=s) for s in submissions)
+    for s in submissions:
+        Script.objects.create(script = s)
     
-   
+    scripts = Script.objects.filter(script__in = submissions).order_by('score')
+    user = request.user
+    return setup_round(pk, scripts, user)
+
+
+
+def setup_round(pk, scripts, user):
+    what_round = Round.objects.filter(assignment__id = pk).latest('id')
+    assignment = Assignment.objects.get(id = pk)
     try:
         iterator = iter(scripts)
         for i in iterator:
-            Judgement.objects.create(assignment = assignment, what_round = first_round, judge = request.user, date_time = datetime.now(), script_a = i, script_b = next(iterator))
-    except StopIteration:
-        missing_script = Judgement.objects.latest('id')
-        missing_script.script_b = scripts.first()
+                Judgement.objects.create(assignment = assignment, what_round = what_round, judge = user, date_time = datetime.now(), script_a = i, script_b = next(iterator))
+    except StopIteration:       
+        
+            duplicate_script = Script.objects.filter(id__in = scripts).order_by('-score')[1]
+            odd_script = Script.objects.latest('id')
+            last_judgement = Judgement.objects.create(assignment = assignment, what_round = what_round, judge = user, date_time = datetime.now(), script_a = odd_script, script_b = duplicate_script)
+        
+     
     
-    next_pair = Judgement.objects.all()[0]
+    next_pair = Judgement.objects.filter(what_round = what_round)[0]
     pair_id = next_pair.id
 
     return redirect('generate_pair', pk=pk, pair_id = pair_id, winner = 0)
  
-#Hanna! create a function to automatically update script score values when a winner is selected.
+
 def generate_pair(request, pk, pair_id, winner):
     
     current_pair = Judgement.objects.get(id = pair_id)
     this_round = current_pair.what_round
     if winner != 0:
-        next_pair = Judgement.objects.filter(assignment__id = pk,what_round = this_round, winner__isnull = True)[0]
         this_winner = Script.objects.get(id = winner)
-        if next_pair:
-            
-            current_pair.winner = this_winner
-            
-
+        current_pair.winner = this_winner
+        current_pair.save()
+        pairs = Judgement.objects.filter(assignment__id = pk,what_round = this_round, winner__isnull = True)
+       
+        if pairs:
+            next_pair = pairs.first()
+            new_score = this_winner.score
+            new_score += 1
+            this_winner.score =  new_score
+            this_winner.save()
         else:
+            print(Script.objects.all().count())
             current_pair.winner = None if (Script.objects.all().count()%2 != 0 and this_winner == current_pair.script_b) else this_winner
-           
-            return redirect('log_in')
+
+            if current_pair.winner == this_winner:
+                new_score = this_winner.score
+                new_score += 1
+                this_winner.score =  new_score
+                this_winner.save()
+            user = request.user
+            return evaluate_round(pk, user)
     
     else:
 
         next_pair = current_pair
-    
-    
+
     
     return render(request, 'acj_view.html', context = { 'next_pair' : next_pair})
+
+
+
+
+def evaluate_round(pk, user):
+    previous_round = Round.objects.filter(assignment__id = pk).latest('id')
+    scripts = Script.objects.filter(script__assignment__id = pk).order_by('-score')
+    assignment = Assignment.objects.get(id = pk)
+    if previous_round.what_round < 5:
+        values_list = []
+
+        for s in scripts:
+            values_list.append(update_values(pk, s))
+           
+        i = 0
+        for s in scripts:
+            s.value = values_list[i]
+            s.save()
+            i+=1
+
+        scripts = scripts.order_by('-value')
+
+    new_round = previous_round.what_round + 1
+    Round.objects.create(assignment = assignment, what_round = new_round)
+
+    return setup_round(pk, scripts, user)
+
+
+
+
+
+    
+    
 
 
 

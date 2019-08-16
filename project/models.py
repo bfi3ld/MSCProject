@@ -65,8 +65,10 @@ class Judgement(models.Model):
 
 class Script(models.Model):
     script = models.OneToOneField('Submission', on_delete = models.CASCADE)
-    score = models.IntegerField(null = True)
-    value = models.IntegerField(default = '1')
+    score = models.IntegerField(default = '0')
+    value = models.DecimalField(default = '1.0', max_digits= 100, decimal_places = 5)
+
+    
 
 class Round(models.Model):
     assignment = models.ForeignKey('Assignment', on_delete = models.CASCADE)
