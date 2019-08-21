@@ -4,12 +4,16 @@
 
 {% block import_block %}
 
+<link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+
+
 
     {% endblock %}
 
 {% block content %}
  <div class = buttons>
- <a id = "log_in"><h2>Log in</h2></a>
- <a id = "register" href = "{% url 'teacher_register' %}"><h2>Register as teacher</h2></a>
+ <a id = "log_in" href = "{% url 'log_in' %}"><p>Log in</p></a>
+ <a id = "register" href = "{% url 'teacher_register' %}"><p>Register as teacher</p></a>
 </div>
 {% endblock %}

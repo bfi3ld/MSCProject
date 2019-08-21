@@ -3,18 +3,29 @@ h5 {
 }
 
 .page_content {
-    width:100%;
-    height:100%;
+    width:90%;
+    min-height:100%;
     display:flex;
+    flex-direction: column;
    
-    flex-direction:row;  
+    
+    
+}
+.patch_content {
+    width:100%;
+    min-height:100%;
+    display:flex;
+    flex-direction: row;
+
 }
 
 .submission_history{
-    width:60%;
+    width:50%;
+    min-height:100%;
     background-color:white;
     border:solid 1px rgba(0,0,0,0.1);
 }
+
 
 .edit{
     width:100%;
@@ -23,6 +34,10 @@ h5 {
    
     
 
+}
+
+.ind_edits {
+    font-size:12px;
 }
 .added{
     padding:10px;
@@ -33,9 +48,9 @@ h5 {
     border-bottom:solid 1px rgba(0,0,0,0.1);
 }
 .edit_border {
-    width:100%;
+    max-width:100%;
     background-color:rgba(107,122,143, 0.3);
-    padding:10px;
+   
     border-bottom:solid 1px rgba(0,0,0,0.1);
     display:flex;
     justify-content:space-between;
@@ -51,8 +66,28 @@ h5 {
     display:none;
 }
 
-.assignment_title {
+.patch_title {
     padding:10px;
     display:flex;
     justify-content: center;
+    border:solid 1px rgba(0,0,0,0.4);
+    width:100%;
+}
+
+.feedback_container {
+    width:50%;
+    height:100%;
+    display:flex;
+    flex-direction:column;
+   
+}
+
+.ind_feedback {
+    max-width:100%;
+    background-color:white;
+    padding:20px;
+    margin-bottom:10px;
+    border-radius:10px;
+    border:solid 1px rgba(0,0,0,0.4);
+
 }

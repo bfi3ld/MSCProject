@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate
 from django.contrib import messages
 from diff_match_patch import diff_match_patch
+from django.utils.html import strip_tags
+from bs4 import BeautifulSoup
 
 
 # Create your views here.
@@ -59,6 +61,10 @@ def log_in(request):
                   template_name="login.html",
                   context={"form": form})
 
+def log_out(request):
+    logout(request)
+    return redirect('index')
+
 
 def add_student(request):
     if request.method == 'POST':
@@ -85,38 +91,40 @@ def add_student(request):
     return render(request, 'add_student.html', {'register_form': register_form, 'student_form': student_form})
 
 
-def add_assignment(request):
+def add_patch(request):
     if request.method == 'POST':
-        assignment_form = CreateAssignmentForm(request.POST)
-
-        final_assignment, created = Assignment.objects.get_or_create(
+        patch_form = CreatePatchForm(request.POST)
+        if patch_form.is_valid():
+            patch_form.save()
+            quilt, created = Patch.objects.get_or_create(
             is_final=True)
-        if created:
-            final_assignment.assignment_title = "Final Assignment"
-            final_assignment.assignment_description = "final assignment"
-            final_assignment.save()
+            if created:
+                quilt.patch_title = "Final patch"
+                quilt.patch_description = "final patch"
+                quilt.save()
+            
 
-        if assignment_form.is_valid():
-            assignment_form.save()
+        
+           
 
         return redirect('teacher_home')
     else:
-        assignment_form = CreateAssignmentForm()
-    return render(request, 'add_assignment.html', {
-        'assignment_form': assignment_form})
+        patch_form = CreatePatchForm()
+    return render(request, 'add_patch.html', {
+        'patch_form': patch_form})
 
 
 def add_rubrik(request, pk):
-    assignment = Assignment.objects.get(id=pk)
+    patch = Patch.objects.get(id=pk)
 
     if request.method == 'POST':
         form = CreateRubrikForm(request.POST)
 
         if form.is_valid():
             rubrik = form.save(commit=False)
-            rubrik.assignment = assignment
+            rubrik.patch = patch
             rubrik.save()
-            return redirect('teacher_assignment_view', pk=pk)
+            return redirect('teacher_patch_view', pk=pk)
     else:
         form = CreateRubrikForm()
     return render(request, 'add_rubrik.html', context={
@@ -126,41 +134,43 @@ def add_rubrik(request, pk):
 
 def teacher_home(request):
     students = Student.objects.all()
-    assignments = Assignment.objects.all()
-    header_row = ['Student']+[a.assignment_title for a in assignments]
-    table_content = []
-
+    patches = Patch.objects.filter(is_final = False)
+    final_quilt = Patch.objects.get(is_final = True)
+    submissions = ''
+    #edits = Submission_edits.objects.
+    sub_dict = {}
     for s in students:
-        row_content = [s.user.username]
-        for a in assignments:
-            try:
-                sub = Submission.objects.get(
-                    student__id=s.id, assignment_id=a.id, is_original = True)
-                if sub.published_date <= a.submission_date:
-                    cell_content = 'on time'
-                else:
-                    cell_content = 'late'
-            except Submission.DoesNotExist:
-                cell_content = ''
+        submissions = Submission.objects.filter(student = s).order_by('patch')
+        for sub in submissions:
+            sub_arr = []
+            sub_arr.append(sub)
+            if sub.is_original == True:
+                edits = Submission_edits.objects.filter(submission = sub)
+                sub_arr.append(edits)
+            sub_dict[s] = sub_arr
+    
+    print(sub_dict)
 
-            row_content.append(cell_content)
-        table_content.append(row_content)
 
-    return render(request, 'teacher_home.html', context={'table_content': table_content,
-                                                         'assignments': assignments,
-                                                         'students': students
+
+    return render(request, 'teacher_home.html', context={
+                                                         'patches': patches,
+                                                         'final_quilt' : final_quilt,
+                                                         'students': students,
+                                                         'submissions': submissions,
+                                                         'sub_dict' : sub_dict
                                                          })
 
 
-def teacher_assignment_view(request, pk):
-    assignment = Assignment.objects.get(id=pk)
+def teacher_patch_view(request, pk):
+    patch = Patch.objects.get(id=pk)
     try:
-        peer_rubrik = Peer_review_rubrik.objects.filter(assignment=pk)
+        peer_rubrik = Peer_review_rubrik.objects.filter(patch=pk)
     except Peer_review_rubrik.DoesNotExist:
         peer_rubrik = None
 
-    return render(request, 'teacher_assignment_view.html', context={
-        'assignment': assignment,
+    return render(request, 'teacher_patch_view.html', context={
+        'patch': patch,
         'peer_rubrik': peer_rubrik
 
     })
@@ -177,11 +187,11 @@ def make_submission(request, pk):
         if form.is_valid():
             submission = form.save(commit=False)
             submission.student = Student.objects.get(user=request.user)
-            submission.assignment = Assignment.objects.get(id=pk)
+            submission.patch = Patch.objects.get(id=pk)
             submission.published_date = datetime.now()
             submission.is_original = True
             submission.save()
-            return redirect('assignment_view', pk=pk)
+            return redirect('patch_view', pk=pk)
 
         else:
             print(form.errors)
@@ -192,83 +202,60 @@ def make_submission(request, pk):
 
 
 def edit_submission(request, pk):
-    assignment = Assignment.objects.get(pk = pk)
+    patch = Patch.objects.get(pk = pk)
+    display_html = ''
 
     latest_submission, created = Submission.objects.get_or_create(
-        assignment=assignment, student=Student.objects.get(user=request.user), is_original = False)
+        patch=patch, student=Student.objects.get(user=request.user), is_original = False)
     
     if created:
    
-        old_content = Submission.objects.get(assignment=assignment, student=Student.objects.get(user=request.user), is_original = True)
+        old_content = Submission.objects.get(patch=patch, student=Student.objects.get(user=request.user), is_original = True)
         
         latest_submission.content = old_content.content
+        latest_submission.save()
     if request.method == 'POST':
         form = EditSubmissionForm(request.POST)
         if form.is_valid():
             updated_submission = form.cleaned_data['content']
 
-            text1 = latest_submission.content
-            text2 = updated_submission
+           
+
+            text1 = BeautifulSoup(latest_submission.content, features="html.parser")
+            text2 = BeautifulSoup(updated_submission, features="html.parser")
+            
+            conv_1 = text1.get_text()
+            conv_2 = text2.get_text()
+            
+
 
             dmp = diff_match_patch()
-            diffs = dmp.diff_main(text1,text2)
+            difference = dmp.diff_main(conv_1,conv_2)
            
-            #text = dmp.patch_toText(diffs)
+            dmp.diff_cleanupSemantic(difference)
 
             
+            display_html = dmp.diff_prettyHtml(difference)
 
-
-             
-            html = dmp.diff_prettyHtml(diffs)
 
             
-            #array = text.split(")(")
-            text_string = ""
+           
             
-            
-            # for a in array:
-            #     if a.startswith("("):
-            #         a = a.replace("(","", 1)
-                    
-               
-            #     if a.startswith("0"):
-            #         text_string+=a
-                    
-                  
-            #     elif a.startswith("1"):
-            #         text_string += "\n" + "+++ " + a
-                   
-
-            #     elif a.startswith("-1"):
-            #         text_string += a + '\u0336'
-            print(html)
 
           
                  
 
                 
 
-            #text_1 = latest_submission.content.split(".")
-            #text_2 = updated_submission.split(".")
-            #is_added = False
-            #string_deleted = ''
-            #string_added = ''
-            #lib = difflib.Differ()
-            #comparing = lib.compare(text_1,text_2)
-            #for line in comparing:
-             #   print(line)
-              #  if line.startswith('+'):
-               #    string_added += line + '\n'
-               # elif line.startswith('-'):
-                #    string_deleted += line + '\n'
+
                 
             
-            #submission_edits = Submission_edits(
-            #    deleted = diff, added = patches, date_time=datetime.now(), submission=latest_submission)
-            #submission_edits.save()
-            #latest_submission.content = updated_submission
-            #latest_submission.published_date = datetime.now()
-            #latest_submission.save()
+            submission_edits = Submission_edits(
+                deleted = display_html, date_time=datetime.now(), submission=latest_submission)
+            submission_edits.save()
+            latest_submission.content = updated_submission
+            latest_submission.published_date = datetime.now()
+            latest_submission.save()
             return redirect('view_feedback', pk=pk)
 
     else:
@@ -278,31 +265,35 @@ def edit_submission(request, pk):
     return render(request, 'edit_submission.html', context={
         'form': form,
         'latest_submission': latest_submission,
-        'assignment': assignment
+        'patch': patch,
+        'display_html' : display_html
     })
 
 
-def assignment_view(request, pk):
-    assignment = Assignment.objects.get(pk=pk)
+def patch_view(request, pk):
+    patch = Patch.objects.get(pk=pk)
 
     try:
-        submission = Submission.objects.get(assignment = assignment, student__user=request.user, is_original = True)
+        submission = Submission.objects.get(patch = patch, student__user=request.user, is_original = True)
     except Submission.DoesNotExist:
         submission = None
 
     
 
-    return render(request, 'assignment_view.html', context={
-        'assignment': assignment,
+    return render(request, 'patch_view.html', context={
+        'patch': patch,
         'submission': submission})
 
 
-def final_assignment_view(request):
-    assignment = Assignment.objects.get(is_final=True)
+def final_patch_view(request):
+    patch = Patch.objects.get(is_final=True)
     submissions = Submission.objects.filter(
-        is_original=False, student=Student.objects.get(user=request.user))
-    return render(request, 'final_assignment_view.html', context={
-        'assignment': assignment,
+        student=Student.objects.get(user=request.user), is_original = True)
+    
+    
+
+    return render(request, 'final_patch_view.html', context={
+        'patch': patch,
         'submissions': submissions
     })
 
@@ -313,36 +304,36 @@ def give_feedback(request, pk):
     group_members = Student.objects.filter(
         group=own_group).exclude(user=request.user)
 
-    assignment = Assignment.objects.get(id=pk)
+    patch = Patch.objects.get(id=pk)
 
     submissions = Submission.objects.filter(
-        assignment__id=pk, student__in=group_members)
+        patch__id=pk, student__in=group_members, is_original = True)
     print(submissions)
     return render(request, 'give_feedback.html', context={
         'submissions': submissions,
-        'assignment': assignment
+        'patch': patch
 
 
     })
 
 
 def group_submission(request, pk, subid):
-    print(request.user)
-    assignment = Assignment.objects.get(pk=pk)
+    
+    patch = Patch.objects.get(pk=pk)
     submission = Submission.objects.get(id=subid)
-    print(submission)
+    
     author = request.user
 
     peer_review = Feedback.objects.filter(author=author, submission=submission)
     peer_review_id = peer_review.values('peer_review_rubrik')
     peer_rubrik = Peer_review_rubrik.objects.filter(
-        assignment=assignment).exclude(id__in=peer_review_id)
+        patch=patch).exclude(id__in=peer_review_id)
     print(peer_review_id)
 
     form = PeerReviewForm()
 
     return render(request, 'group_submission.html', context={
-        'assignment': assignment,
+        'patch': patch,
         'submission': submission,
         'peer_rubrik': peer_rubrik,
         'peer_review': peer_review,
@@ -367,53 +358,74 @@ def submit_peer_review(request, pk, subid, rubrik):
 
 
 def view_feedback(request, pk):
+    student = Student.objects.get(user = request.user)
+    submission = Submission()
+    patch = Patch.objects.get(id = pk)
+    try:
+        submission = Submission.objects.filter(
+            patch=pk, student=Student.objects.get(user=request.user)).latest('id')
+       
+    except submission.DoesNotExist:
+        pass
    
-    submission = Submission.objects.filter(
-        assignment=pk, student=Student.objects.get(user=request.user)).latest('id')
-    
-    assignment = submission.assignment
     peer_reviews = Feedback.objects.filter(
         submission=submission, author__is_student=True).order_by('peer_review_rubrik')
     teacher_feedback = Feedback.objects.filter(
         submission=submission, author__is_teacher=True)
     return render(request, 'view_feedback.html', context={
         'submission': submission,
-        'assignment': assignment,
+        'patch': patch,
         'peer_reviews': peer_reviews,
         'teacher_feedback': teacher_feedback
     })
 
 
 def student_home(request):
-    assignments = Assignment.objects.filter(is_final=False)
-    final_assignment = Assignment.objects.get(is_final=True)
+    patches = Patch.objects.filter(is_final=False)
+    final_patch = Patch.objects.get(is_final=True)
     return render(request, 'student_home.html', context={
-        'assignments': assignments,
-        'final_assignment': final_assignment})
+        'patches': patches,
+        'final_patch': final_patch})
 
 
 def stitch_patches(request):
-    submission_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
-    latest_submissions = Submission.objects.filter(id__in=submission_ids)
-    assignments = latest_submissions.values('assignment')
-    original_submissions = Submission.objects.filter(student__user = request.user, assignment__in = assignments, is_original = True)
-   
+    if request.method == 'POST':
+        form = SubmissionForm(request.POST)
+
+        if form.is_valid():
+            submission = form.save(commit=False)
+            submission.student = Student.objects.get(user=request.user)
+            submission.patch = Patch.objects.get(id=pk)
+            submission.published_date = datetime.now()
+            submission.is_original = False
+            submission.save()
+
+
+
+    patch_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
+    patches = Patch.objects.filter(id__in=patch_ids)
+
+    
+    original_submissions = Submission.objects.filter(student__user = request.user, patch__id__in = patches, is_original = True)
+    latest_submissions = Submission.objects.filter(student__user = request.user, patch__id__in = patches, is_original = False)
     submissions =  zip(original_submissions, latest_submissions)
-    submission_edits = Submission_edits.objects.filter(submission__id__in=submission_ids)
+    submission_edits = Submission_edits.objects.filter(submission__id__in=latest_submissions)
+    feedback = Feedback.objects.filter(submission__in = original_submissions)
    
     
     return render(request, 'stitch_patches.html', context={
         'submissions': submissions,
-        'submission_edits': submission_edits})
+        'submission_edits': submission_edits,
+        'feedback' : feedback})
 
 
 
 
 #Function that initiates a new judgement session.
 def new_judge_session(request, pk):
-    assignment = Assignment.objects.get(id = pk)
-    first_round = Round.objects.create(assignment = assignment, what_round = 1)
-    submissions = Submission.objects.filter(assignment__id = pk, is_original = True)
+    patch = Patch.objects.get(id = pk)
+    first_round = Round.objects.create(patch = patch, what_round = 1)
+    submissions = Submission.objects.filter(patch__id = pk, is_original = True)
     for s in submissions:
         Script.objects.create(script = s)
     
@@ -422,19 +434,20 @@ def new_judge_session(request, pk):
     return setup_round(pk, scripts, user)
 
 
-
+#Function that sets up each round by creating the judgement objects and assign pairs. 
 def setup_round(pk, scripts, user):
-    what_round = Round.objects.filter(assignment__id = pk).latest('id')
-    assignment = Assignment.objects.get(id = pk)
+    what_round = Round.objects.filter(patch__id = pk).latest('id')
+    patch = Patch.objects.get(id = pk)
     try:
         iterator = iter(scripts)
         for i in iterator:
-                Judgement.objects.create(assignment = assignment, what_round = what_round, judge = user, date_time = datetime.now(), script_a = i, script_b = next(iterator))
+                Judgement.objects.create(patch = patch, what_round = what_round, judge = user, date_time = datetime.now(), script_a = i, script_b = next(iterator))
     except StopIteration:       
-        
+        #If there are an odd number of scripts the last script will be compared to the one before it,
+        # but if the duplicate one wins it will not get a score. 
             duplicate_script = Script.objects.filter(id__in = scripts).order_by('-score')[1]
             odd_script = Script.objects.latest('id')
-            last_judgement = Judgement.objects.create(assignment = assignment, what_round = what_round, judge = user, date_time = datetime.now(), script_a = odd_script, script_b = duplicate_script)
+            last_judgement = Judgement.objects.create(patch = patch, what_round = what_round, judge = user, date_time = datetime.now(), script_a = odd_script, script_b = duplicate_script)
         
      
     
@@ -452,7 +465,7 @@ def generate_pair(request, pk, pair_id, winner):
         this_winner = Script.objects.get(id = winner)
         current_pair.winner = this_winner
         current_pair.save()
-        pairs = Judgement.objects.filter(assignment__id = pk,what_round = this_round, winner__isnull = True)
+        pairs = Judgement.objects.filter(patch__id = pk,what_round = this_round, winner__isnull = True)
        
         if pairs:
             next_pair = pairs.first()
@@ -483,9 +496,9 @@ def generate_pair(request, pk, pair_id, winner):
 
 
 def evaluate_round(pk, user):
-    previous_round = Round.objects.filter(assignment__id = pk).latest('id')
-    scripts = Script.objects.filter(script__assignment__id = pk).order_by('-score')
-    assignment = Assignment.objects.get(id = pk)
+    previous_round = Round.objects.filter(patch__id = pk).latest('id')
+    scripts = Script.objects.filter(script__patch__id = pk).order_by('-score')
+    patch = Patch.objects.get(id = pk)
     if previous_round.what_round < 5:
         values_list = []
 
@@ -501,7 +514,7 @@ def evaluate_round(pk, user):
         scripts = scripts.order_by('-value')
 
     new_round = previous_round.what_round + 1
-    Round.objects.create(assignment = assignment, what_round = new_round)
+    Round.objects.create(patch = patch, what_round = new_round)
 
     return setup_round(pk, scripts, user)
 

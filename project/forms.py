@@ -1,30 +1,24 @@
 from django import forms
 from project.models import User
-from project.models import Submission, User, Assignment, Student, Peer_review_rubrik, Feedback, Submission_edits
+from project.models import Submission, User, Patch, Student, Peer_review_rubrik, Feedback, Submission_edits
 from tinymce.widgets import TinyMCE
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 from django.contrib.auth.forms import AuthenticationForm
+from django_summernote.widgets import SummernoteWidget
 
 
-class TinyMCEWidget(TinyMCE):
-    def use_required_attribute(self, *args):
-        return False
 
 
 class SubmissionForm(forms.ModelForm):
-    content = forms.CharField(
-        widget=TinyMCEWidget(
-            attrs={'required': False, 'cols': 30, 'rows': 10}
-        )
-    )
+    content = forms.CharField(widget=SummernoteWidget())
 
     class Meta:
         model = Submission
         fields = ['content']
 
 class EditSubmissionForm(forms.Form):
-    content = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    content = forms.CharField(widget=SummernoteWidget())
     
 
 
@@ -64,16 +58,16 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 
-class CreateAssignmentForm(forms.ModelForm):
-    assignment_title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'style':'width:800px'}))
-    assignment_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+class CreatePatchForm(forms.ModelForm):
+    patch_title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'style':'width:800px'}))
+    patch_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
     submission_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-control'}))
     peer_review_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-control'}))
 
 
     class Meta:
-        model = Assignment
-        fields = ('assignment_title', 'assignment_description', 'submission_date', 'peer_review_date')
+        model = Patch
+        fields = ('patch_title', 'patch_description', 'submission_date', 'peer_review_date')
 
 class CreateRubrikForm(forms.ModelForm):
     instruction = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))

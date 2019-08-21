@@ -1,13 +1,8 @@
 {% extends 'base.html' %}
-
 {% load staticfiles %}
-
-
 {% block import_block %}
 <link rel="stylesheet" href="{% static 'css/give_feedback.css' %}">
-
-    {% endblock %}
-
+{% endblock %}
 {% block content %}
 
 <div class = "page_content">
@@ -15,10 +10,10 @@
 
   
         <div class = "menu_bar">
-                <div class = "title"><h3>{{ assignment.assignment_title }}</h3></div>
-            <a class = "box_link" id = "submission" href = "{% url 'assignment_view' assignment.id %}"> <h3>Submission</h3></a>
-            <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' assignment.id %}"><h3>Give feedback</h3></a>
-            <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
+              
+            <a class = "box_link" id = "submission" href = "{% url 'patch_view' patch.id %}"> <p>{{ patch.patch_title }}</p></a>
+            <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' patch.id %}"><p>Give feedback</p></a>
+            <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' patch.id %}"><p>View feedback/Edit</p></a>
             
         </div>
 
@@ -29,7 +24,7 @@
         {% if submissions %}
         {% for s in submissions %}
             <div class = "member">
-                <div class = member_name><a href = "{% url 'group_submission' assignment.id s.id  %}"><h3>{{ s.student.user.username }}</h3></a></div>
+                <div class = member_name><a href = "{% url 'group_submission' patch.id s.id  %}"><h3>{{ s.student.user.username }}</h3></a></div>
             </div>
         {% endfor %}
         {% else %}

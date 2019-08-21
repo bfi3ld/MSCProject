@@ -5,7 +5,7 @@ def update_values(pk,script):
 
     score = script.score
     value = script.value
-    other_scripts = Script.objects.filter(script__assignment__id = pk).exclude(id = script.id)
+    other_scripts = Script.objects.filter(script__patch__id = pk).exclude(id = script.id)
     expected_score = 0
     information = 0
 

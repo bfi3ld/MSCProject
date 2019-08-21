@@ -46,11 +46,11 @@ class Migration(migrations.Migration):
             ],
         ),
         migrations.CreateModel(
-            name='Assignment',
+            name='patch',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('assignment_title', models.CharField(default='', max_length=100)),
-                ('assignment_description', models.TextField()),
+                ('patch_title', models.CharField(default='', max_length=100)),
+                ('patch_description', models.TextField()),
                 ('submission_date', models.DateTimeField()),
                 ('peer_review_date', models.DateTimeField()),
             ],
@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('content', models.TextField()),
                 ('published_date', models.DateTimeField(blank=True, null=True)),
-                ('assignment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.Assignment')),
+                ('patch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.patch')),
                 ('student', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.Student')),
             ],
         ),
@@ -78,7 +78,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('instruction', models.TextField()),
-                ('assignment', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.Assignment')),
+                ('patch', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='project.patch')),
             ],
         ),
         migrations.CreateModel(

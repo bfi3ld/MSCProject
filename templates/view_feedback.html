@@ -9,50 +9,59 @@
     {% endblock %}
 
 {% block content %}
+<div class = "page_content">
 <div class = "menu_bar">
-        <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
-        <a class = "box_link" id = "submission" href = "{% url 'assignment_view' assignment.id %}"> <h3>Submission</h3></a>
-        <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' assignment.id %}"><h3>Give feedback</h3></a>
-        <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
+       
+        <a class = "box_link" id = "submission" href = "{% url 'patch_view' patch.id %}"> <p> {{ patch.patch_title }}</p></a>
+        <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' patch.id %}"><p>Give feedback</p></a>
+        <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' patch.id %}"><p>View feedback/Edit</p></a>
         
     </div>
-<div class = "page_content">
-<div class = "submission_box">
-    <div class = "submission">
-        {% if submission %}
-        <p> {{ submission.content }}
-            </p>
-            <a href = "{% url 'edit_submission' assignment.id %}">Edit submission</a>
-            {% endif %}
 
+    <div class = "feedback_display">
+
+        <div class = "submission_container">
+    
+            {% if submission %}
             
-    </div>
+                <div class = "submission_content"><p> {{ submission.content|safe }} </p></div> 
+                     
+        
+            {% else %}
+            <div class = "status_bar">No submission yet</div>
+            {% endif %}
+            <a href = "{% url 'edit_submission' patch.id %}">Edit submission</a>
+
+        </div>
+
+    <div class = "tutor_feedback_section">
+        {% if teacher_feedback %}
+        <div class = "tutor_feedback">
+            <h3>{{ teacher_feedback.author.username }}</h3>
+            <p>
+                {{ teacher_feedback.review }}
+            </p> 
+        </div>
+    
+        {% else %}
+        <div class = "status_bar">No feedback from teacher yet</div>
+        {% endif %}
+
     <div class = "peer_feedback">
-    {% if peer_reviews %}
-    {% for review in peer_reviews %}
+        {% if peer_reviews %}
+        {% for review in peer_reviews %}
     
         <div class = "ind_feedback">
-                <h3>{{ review.author.username }}</h3>
-                <p>{{ review.review }}</p>
+            <h3>{{ review.author.username }}</h3>
+            <p>{{ review.review }}</p>
 
         </div>
         {% endfor %}
         {% else %}
-        <p>No feedback from peers yet</p>
+        <div class = "status_bar">No peer reviews yet</div>
         {% endif %}
     </div>
-    
 </div>
-<div class = "tutor_feedback">
-    {% if teacher_feedback %}
-    <h3>{{ teacher_feedback.author.username }}</h3>
-        <p>
-            {{ teacher_feedback.review }}
-
-            </p> 
-            {% else %}
-            <p>No feedback from teacher yet</p>
-            {% endif %}
 </div>
 </div>
 

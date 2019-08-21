@@ -4,19 +4,12 @@
     
 }
 
-.final_assignment_display {
-    width: 100%;
-    background-color: white;
-    border: 1px solid rgba(0,0,0,0.1);
-    padding:30px;
-    margin-top:20px;
 
-
-}
 
 .past_submissions {
     width:100%;
     display:flex;
+    justify-content:center;
     padding:10%;
     
 }
@@ -25,7 +18,8 @@
     height:300px;
     overflow:hidden;
     background-color:white;
-    border: 1px solid rgba(0,0,0,0.1);
+   border: 1px solid rgba(0,0,0,0.4);
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.3);
     padding:10px;
 }
 

@@ -8,42 +8,64 @@
 
 {% block content %}
 <div class="page_content">
-    <div class = "submission_history">
+    
     {% for o, l in submissions %}
-    <div class= "assignment_title">
-        <h4>{{o.assignment.assignment_title}}</h4>
+    <div class= "patch_title">
+        <h4>{{o.patch.patch_title}}</h4>
     </div>
+    <div class = "patch_content">
+      
+    <div class = "submission_history">
     <div class = "edit_border">
-        <h4>Original submitted on {{ o.published_date }}</h4><icon id = "id-sub-{{forloop.counter}}" onclick = "collapse_menu('{{o.id }}', this.id);">+</icon></div>
-        <div class = "collapsable" id = "{{ o.id }}">{{ o.content }}</div>
+        <p>Original submitted on {{ o.published_date }}</p><icon id = "id-sub-{{forloop.counter}}" onclick = "collapse_menu('{{o.id }}', this.id);">+</icon></div>
+        <div class = "collapsable" id = "{{ o.id }}">{{ o.content|safe }}</div>
     
     {% for se in submission_edits %}
         {% if se.submission.id == l.id %}
                 <div class = "edit">
                     <div class = "edit_border">
                     
-                    <h4>Edited on {{ se.date_time }}</h4><icon class ="plus" id = "id-{{forloop.counter}}"onclick = "collapse_menu('{{se.id }}',this.id);">+</icon>
+                    <p class = "ind_edits">Edited on {{ se.date_time }}</p><icon class ="plus" id = "id-{{forloop.counter}}"onclick = "collapse_menu('{{se.id }}',this.id);">+</icon>
                     </div>
                     <div class = "collapsable" id = "{{ se.id }}">
                     <div class = "deleted">
-                        <h5>Deleted</h5>
-                        {{ se.deleted }}
+                        <h5>Changes</h5>
+                        {{ se.deleted|safe}}
                     </div>
-                    <div class = "added">
-                        <h5>Added</h5>
-                        {{ se.added }}
-                    </div>
+                   
                 </div>
                 </div>
             {% endif %}
             {% endfor %}
             <div class = "latest_submission" id = "{{l.id}}">
-                <h4>Latest submitted on {{l.published_date}}</h4>
-                {{ l.content }}
+                <p>Latest submitted on {{l.published_date}}</p>
+                {{ l.content|safe }}
             </div>
            
            
+    
+
+    <div class = "final_submission">
+
+    </div>
+
+</div>
+<div class = "feedback_container">
+{% if feedback %}
+
+{% for f in feedback %}
+{% if f.submission.id == o.id %}
+
+    <div class = ind_feedback> {{ f.review }} </div>
+    {% endif %}
     {% endfor %}
+</div>
+
+
+
+{% endif %}
+{% endfor %}
+
 
 </div>
 </div>

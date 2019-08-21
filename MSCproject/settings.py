@@ -17,8 +17,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 STATIC_DIR = os.path.join(BASE_DIR, 'static')
 MEDIA_DIR = os.path.join(BASE_DIR, 'media')
-TINYMCE_JS_URL = STATIC_DIR + 'js/tiny_mce/tiny_mce.js'
-TINYMCE_JS_ROOT = STATIC_DIR + 'js/tiny_mce'
+TINYMCE_JS_ROOT = "../static/django-tinymce/tinymce/static/tiny_mce"
+TINYMCE_JS_URL = STATIC_DIR + 'tiny_mce/tiny_mce_src.js'
+
 
 
 
@@ -43,8 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'tinymce',
-    'project'
+    'project',
+    'django_summernote',
 ]
 
 AUTH_USER_MODEL = 'project.User'
@@ -130,6 +131,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR, ]
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 TINYMCE_DEFAULT_CONFIG = {
     'height': 360,

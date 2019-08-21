@@ -10,28 +10,33 @@
 {% block content %}
 <div class =  "page_content">
 
-    <div class =  "button_container">
-        <a class = "add_students" href = "{% url 'add_student'%}">Add/Edit students</a>
-        <a class = "add_assignment" href = "{% url 'add_assignment'%}">Add patch</a>
-    </div>
+        <div class = "button_container">
+                <a class = "add_students" href = "{% url 'add_student'%}">Add/Edit students</a>
+                <a class = "add_patch" href = "{% url 'add_patch'%}">Add patch</a>
+            </div>
 
     <div class = "student_form">
 
         <table class ="1" >
             <th> Students </th>
-            {% for a in assignments %}
-            <th><a href = "{% url 'teacher_assignment_view' a.id %}">{{ a.assignment_title }}</a></th>
+            {% for a in patches %}
+            <th><div class = "patches"><a href = "{% url 'teacher_patch_view' a.id %}">{{ a.patch_title }}</a></div></th>
             {% endfor %}
+            <th><div class = "patches"><a href = "{% url 'final_patch_view' %}">{{ final_quilt.patch_title }}</a></div></th>
             {% for student in students %}
             
             <tr>
                 
-                <td>{{ student.user.username }}</td>>
+                <td>{{ student.user.username }}</td>
                 
-                {% for cell_content in row_content %}
-                <td>{{ cell_content }}</td>
-                {% endfor %}
+                {% for key, values in sub_dict.items %}
+                
+                       
+                    {% for v in values %}
+                    <td>{{v}}</td>
+                    {% endfor %}
             </tr>
+            {% endfor %}
             {% endfor %}
         </table>
     </div>

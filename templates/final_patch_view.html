@@ -1,14 +1,13 @@
 {% extends 'base.html' %}
 {% load staticfiles %}
 {% block import_block %}
-<link rel="stylesheet" href="{% static 'css/final_assignment_view.css' %}">
+<link rel="stylesheet" href="{% static 'css/final_patch_view.css' %}">
 {% endblock %}
 {% block content %}
 
 <div class="page_content">
-    <div class="final_assignment_display">
-        {{ assignment.assignment_title }}
-        {{ assignment.assignment_description }}
+    <div class="status_bar">
+        <p>Select what patches to use for the final submission. 
     </div>
     <div class="past_submissions">
         <form action="{% url 'stitch_patches' %}" class="form" method="post">
@@ -16,8 +15,8 @@
 
             {% for s in submissions %}
             <div class="individual_submission">
-                <input type="checkbox" name="{{ s.id }}" value="{{ s.id }}">
-                <h3>{{ s.assignment.assignment_title }}</h3>
+                <input type="checkbox" name="{{ s.patch.id }}" value="{{ s.patch.id }}">
+                <h3>{{ s.patch.patch_title }}</h3>
                 <p>{{ s.content }}</p>
 
             </div>

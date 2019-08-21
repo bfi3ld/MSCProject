@@ -1,0 +1,48 @@
+
+.patchwork {
+    width:80%;
+    height:100%;
+    display:flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content: space-evenly;
+  
+   
+}
+.patch_container {
+    width:120px;
+    height:260px;
+    display:flex;
+    flex-direction:column;
+    align-items: center;
+    
+  
+}
+
+.patches {
+    width:120px;
+    height:120px;
+      
+    background-color:whitesmoke;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+
+    
+    border-radius: 50%;
+    
+    
+}
+.middle-content {
+    background-color:#6B7A8F;
+}
+
+.line {
+    flex-grow:2;
+    height: 1px;
+    background-color:whitesmoke;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.5);
+   
+}
+h1, h2, h3, p {
+    color: #2a3039;
+  
+}

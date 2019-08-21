@@ -23,6 +23,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('project/', include('project.urls')),
     path('project/', include('django.contrib.auth.urls')),
-    path('tinymce/', include('tinymce.urls')),
+    path('summernote/', include('django_summernote.urls')),
     path('', views.index, name = 'index'),
 ]

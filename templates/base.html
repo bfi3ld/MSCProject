@@ -3,11 +3,10 @@
 
 <html lang="en"></html>
 
-<html>
+
 
 <head>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
-        <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
         
     
     {% block import_block %}
@@ -22,11 +21,13 @@
     <!--Imports-->
 
   
-
-    <nav>
-            <h1></h1>
-        </nav>
     
+<header>
+        
+            {% if user.is_authenticated %}<p>Logged in as {{user.username}}</p>
+           
+            {% endif %}
+</header>
 
    
 
@@ -34,8 +35,12 @@
 </head>
 
 
+
+
 <body>
-    <div class = "page">
+        
+   
+        
             <div class = "left-content">
                     
                     
@@ -51,7 +56,7 @@
             </div>
 
         
-    </div>
+    
     
     
 

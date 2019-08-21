@@ -7,15 +7,21 @@
 {% block content %}
 <h1>My timeline</h1>
 <div class="patchwork">
-	{% for a in assignments %}
-        <a class="patches" href = "{% url 'assignment_view' a.id %}">{{ a.assignment_title}}</a>
-	{% endfor %}
-
-	<a class="patches" href = "{% url 'assignment_view' final_assignment.id %}">{{ final_assignment.assignment_title }}</a>
-
-	<div class = "timeline"></div>
-</div>
+		{% for a in patches %}
+		<div class = "patch_container">
+		<h3>Patch {{ forloop.counter }}</h3>
+			<a class="patches" href = "{% url 'patch_view' a.id %}"></a>
+			<p>Due: {{ a.submission_date }}</p>
+			
+		</div>
+			<div class = "line"></div>
+		{% endfor %}
+		<div class = "patch_container">
+			<h3>Quilt</h3>
+		<a class="patches" href = "{% url 'final_patch_view' %}"></a>
+	</div>
 	
+		
 	
 			
 

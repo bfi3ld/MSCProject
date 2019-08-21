@@ -7,7 +7,9 @@
     justify-content: center;
     align-items: center;
     flex-direction:column;
-    font-family:courier;
+    border: 2px solid rgba(0,0,0,0.3);
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.3);
+    
 }
 
 .login_fields{
@@ -16,4 +18,11 @@
     background-color:whitesmoke;
     font-family:courier;
    
+}
+.middle-content {
+    background-color:#6B7A8F;
+}
+h1, h2, h3, p {
+    color: #2a3039;
+  
 }

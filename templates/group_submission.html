@@ -17,19 +17,19 @@
         
           
                 <div class = "menu_bar">
-                    <div class = "title"><h1>{{ assignment.assignment_title }}</h1></div>
-                    <a class = "box_link" id = "submission" href = "{% url 'assignment_view' assignment.id %}"> <h3>Submission</h3></a>
-                    <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' assignment.id %}"><h3>Give feedback</h3></a>
-                    <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' assignment.id %}"><h3>View feedback/Edit</h3></a>
+                    
+                    <a class = "box_link" id = "submission" href = "{% url 'patch_view' patch.id %}"> <p>{{ patch.patch_title }}</p></a>
+                    <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' patch.id %}"><p>Give feedback</p></a>
+                    <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' patch.id %}"><p>View feedback/Edit</p></a>
                     
                 </div>
 
 
         <div class = "submission_container">
-            <div class = "submission"> <h3>{{ submission.student.user.username }}</h3>{{ submission.content }} <button class = "give_feedback">Give feedback</button></div>
+            <div class = "submission"> <h3>{{ submission.student.user.username }}</h3>{{ submission.content }} </div>
             
             <div class = "feedback_container">
-
+                    {% if peer_rubrik %}
                 {% for review in peer_review %}
                 <div class = "review">
                 <h3>{{ review.author.user.username }}</h3>
@@ -37,20 +37,25 @@
                 </div>
                 {% endfor %}
                 
-                {% if peer_rubrik %}
+               
                {% for rubrik in peer_rubrik %}
         
                 <div class = "instruction">
                 {{ rubrik.instruction }}
                 </div>
                 
-                <form action="{% url 'submit_peer_review' assignment.id submission.id rubrik.id %}" class = "form" method="post">
+                <form action="{% url 'submit_peer_review' patch.id submission.id rubrik.id %}" class = "form" method="post">
                         {% csrf_token %}
                 {{ form }}
                 <input type="submit" name="submit"/>
                  </form>
               
                 {% endfor %}
+                {% else %}
+                <p>Peer review is not ready</p>
+                
+
+                
                 {% endif %}
 
                
