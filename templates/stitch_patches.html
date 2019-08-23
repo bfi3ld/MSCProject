@@ -56,7 +56,7 @@
 {% for f in feedback %}
 {% if f.submission.id == o.id %}
 
-    <div class = ind_feedback> {{ f.review }} </div>
+    <div class = ind_feedback><h5>{{ f.author }}</h5> <p>{{ f.review }}</p> </div>
     {% endif %}
     {% endfor %}
 </div>
@@ -64,9 +64,10 @@
 
 
 {% endif %}
+</div>
 {% endfor %}
 
 
-</div>
+
 </div>
 {% endblock %}

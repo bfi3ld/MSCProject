@@ -2,6 +2,10 @@ h5 {
     font-weight:bold;
 }
 
+.middle-content {
+    background-color: #6B7A8F;
+}
+
 .page_content {
     width:90%;
     min-height:100%;
@@ -24,6 +28,7 @@ h5 {
     min-height:100%;
     background-color:white;
     border:solid 1px rgba(0,0,0,0.1);
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.2);
 }
 
 
@@ -67,11 +72,16 @@ h5 {
 }
 
 .patch_title {
-    padding:10px;
+   
     display:flex;
     justify-content: center;
     border:solid 1px rgba(0,0,0,0.4);
     width:100%;
+    background-color:white;
+    border-radius:10px;
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.2);
+    margin-bottom:20px;
+    margin-top:20px;
 }
 
 .feedback_container {
@@ -79,15 +89,17 @@ h5 {
     height:100%;
     display:flex;
     flex-direction:column;
+    align-items:center;
    
 }
 
 .ind_feedback {
-    max-width:100%;
+    width:90%;
     background-color:white;
     padding:20px;
     margin-bottom:10px;
     border-radius:10px;
     border:solid 1px rgba(0,0,0,0.4);
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.2);
 
 }

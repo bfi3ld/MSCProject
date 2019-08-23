@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from project.forms import *
-from project.acj import update_values,calc_probability
+from project.acj import update_values, calc_probability
 from django.utils.timezone import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
@@ -218,8 +218,8 @@ def edit_submission(request, pk):
         form = EditSubmissionForm(request.POST)
         if form.is_valid():
             updated_submission = form.cleaned_data['content']
-
            
+  
 
             text1 = BeautifulSoup(latest_submission.content, features="html.parser")
             text2 = BeautifulSoup(updated_submission, features="html.parser")
@@ -227,7 +227,6 @@ def edit_submission(request, pk):
             conv_1 = text1.get_text()
             conv_2 = text2.get_text()
             
-
 
             dmp = diff_match_patch()
             difference = dmp.diff_main(conv_1,conv_2)
@@ -237,19 +236,11 @@ def edit_submission(request, pk):
             
             display_html = dmp.diff_prettyHtml(difference)
 
-
+            latest_submission.content = updated_submission
+            latest_submission.published_date = datetime.now()
+            latest_submission.save()
             
-           
-            
 
-          
-                 
-
-                
-
-
-                
-            
             submission_edits = Submission_edits(
                 deleted = display_html, date_time=datetime.now(), submission=latest_submission)
             submission_edits.save()
@@ -499,24 +490,36 @@ def evaluate_round(pk, user):
     previous_round = Round.objects.filter(patch__id = pk).latest('id')
     scripts = Script.objects.filter(script__patch__id = pk).order_by('-score')
     patch = Patch.objects.get(id = pk)
-    if previous_round.what_round < 5:
-        values_list = []
+    if previous_round.what_round == 4:
+        scores = [s.score for s in scripts]
+        values = [s.value for s in scripts]
+        vals, _ = estimate_values(scores, vals=values)
+        for script, val in zip(scripts, vals):
+            script.value = val
+            script.save()
 
-        for s in scripts:
-            values_list.append(update_values(pk, s))
+       
+    #     values_list = []
+
+    #     for s in scripts:
+    #         other_scripts = Script.objects.filter(script__patch__id = pk).exclude(id = script.id)
+    #         other_scripts_values = [s.value for s in other_scripts]
+    #         values_list.append(update_values(s.score, s.value, other_scripts_values))
            
-        i = 0
-        for s in scripts:
-            s.value = values_list[i]
-            s.save()
-            i+=1
+    #     i = 0
+    #     for s in scripts:
+    #         s.value = values_list[i]
+    #         s.save()
+    #         i+=1
 
-        scripts = scripts.order_by('-value')
+    #     scripts = scripts.order_by('-value')
 
     new_round = previous_round.what_round + 1
     Round.objects.create(patch = patch, what_round = new_round)
 
     return setup_round(pk, scripts, user)
+
+     #return redirect('patch_view', pk = pk)
 
 
 

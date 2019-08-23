@@ -1,21 +1,5 @@
 
 
-/* 
-p {
-    
-    color: black;
-    margin-left:10px;
-    margin-right:10px;
-    font-family: georgia;
-} */
-
-
-
-
-
-
-
-
 .wrapper {
     display:flex;
     flex-direction:column;
