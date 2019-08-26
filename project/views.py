@@ -536,8 +536,8 @@ def evaluate_round(pk, user):
     scripts = Script.objects.filter(script__patch__id = pk).order_by('-score')
     patch = Patch.objects.get(id = pk)
     if previous_round.what_round > 4:
-        scores = [s.score for s in scripts]
-        values = [s.value for s in scripts]
+        scores = [float(s.score) for s in scripts]
+        values = [float(s.value) for s in scripts]
         vals, _ = estimate_values(scores, vals=values)
        
         for script, val in zip(scripts, vals):

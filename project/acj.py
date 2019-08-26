@@ -46,6 +46,7 @@ def get_iteration_value(script_score, script_value, other_scripts_values):
         expected_score += prob
         information +=  prob * (1 - prob)
     
+    information = max(information, 1e-5)
     print("Script value ", script_value)
     print("Expected score ",expected_score)
     print("Information ",information)
@@ -60,8 +61,10 @@ def get_iteration_value(script_score, script_value, other_scripts_values):
 def calc_probability(val1, val2):
     
     value_diff = val1-val2
-
-    return (np.exp(value_diff)) / (1 + np.exp(value_diff))
+    try:
+        return (np.exp(value_diff)) / (1 + np.exp(value_diff))
+    except:
+        _=0
 
 
     
