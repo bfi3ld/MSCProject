@@ -10,6 +10,7 @@
 		{% for a in patches %}
 		<div class = "patch_container">
 		<h3>Patch {{ forloop.counter }}</h3>
+		
 			<a class="patches" href = "{% url 'patch_view' a.id %}"></a>
 			<p>Due: {{ a.submission_date }}</p>
 			

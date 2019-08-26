@@ -15,10 +15,10 @@
 
   
         <div class = "menu_bar">
-                <div class = "title"><h3>{{ patch.patch_title }}</h3></div>
-            <a class = "box_link" id = "submission" href = "{% url 'patch_view' patch.id %}"> <h3>Submission</h3></a>
-            <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' patch.id %}"><h3>Give feedback</h3></a>
-            <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' patch.id %}"><h3>View feedback/Edit</h3></a>
+                
+            <a class = "box_link" id = "submission" href = "{% url 'patch_view' patch.id %}"> <p>{{ patch.patch_title }}</p></a>
+            <a class = "box_link" id = "give_feedback" href = "{% url 'give_feedback' patch.id %}"><p>Give feedback</p></a>
+            <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' patch.id %}"><p>View feedback/Edit</p></a>
             
         </div>
         <form action = "" class = "form" method="post">

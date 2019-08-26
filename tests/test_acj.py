@@ -24,3 +24,6 @@ def test_estimate_values():
     expected = [1,4,2,1,2]
     npt.assert_array_almost_equal(actual, expected, decimal=3)
 
+
+
+if __name__ == '__main__':

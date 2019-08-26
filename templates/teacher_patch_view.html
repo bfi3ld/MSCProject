@@ -6,18 +6,23 @@
 {% block content %}
 <div class = "page_content">
  
-    <div class = "title"><h1>{{ patch.patch_title }}</h1></div>
+    <div class = "title"><h3>{{ patch.patch_title }}</h3></div>
 
   
    
         <div class = "patch_display">
             <div class = "patch"> <p>{{ patch.patch_description }}</p></div>
-            <a href = "{% url 'add_rubrik' patch.id %}">Add peer-review rubrik</a>
+            
+
+            <div class = "submission_display">
+                    <a class = "button" href = "{% url 'add_rubrik' patch.id %}">Add peer-review rubrik</a>
+                    <a class = "button" href = "{% url 'new_judge_session' patch.id %}">Judge submissions</a>
             {% if peer_rubrik %}
             {% for p in peer_rubrik %}
-            <div class = "peer_rubrik">{{ p.instruction }}</div>
+            <div class = "status_bar">{{ p.instruction }}</div>
             {% endfor %}
             {% endif %}
+        </div>
             
 </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from project.forms import *
-from project.acj import update_values, calc_probability
+from project.acj import estimate_values, calc_probability
 from django.utils.timezone import datetime
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic import CreateView
@@ -14,6 +14,10 @@ from django.utils.html import strip_tags
 from bs4 import BeautifulSoup
 
 
+
+def test(request):
+    return render(request, 'test.html')
+    
 # Create your views here.
 def index(request):
     return render(request, 'index.html')
@@ -136,20 +140,59 @@ def teacher_home(request):
     students = Student.objects.all()
     patches = Patch.objects.filter(is_final = False)
     final_quilt = Patch.objects.get(is_final = True)
-    submissions = ''
-    #edits = Submission_edits.objects.
-    sub_dict = {}
-    for s in students:
-        submissions = Submission.objects.filter(student = s).order_by('patch')
-        for sub in submissions:
-            sub_arr = []
-            sub_arr.append(sub)
-            if sub.is_original == True:
-                edits = Submission_edits.objects.filter(submission = sub)
-                sub_arr.append(edits)
-            sub_dict[s] = sub_arr
+    submissions = Submission.objects.all().order_by('student', 'patch')    #edits = Submission_edits.objects.
+    sub_edits = Submission.objects.all()
+    arr = []
+    for student in students:
+        sub_arr = []
+        for patch in patches:
+            sub_sub_arr = []
+            sub = '&#10060'
+            edit_count = '&#10060'
+            reviewed = '&#10060'
+            try: 
+                org_sub = Submission.objects.get(student =student, patch = patch, is_original = True)
+                if org_sub.published_date < org_sub.patch.submission_date:
+                    sub = '&#9989;'
+                else:
+                    sub = 'late'
+                
+
+                peer_review = Feedback.objects.filter(author = student.user, submission__patch = patch).values('submission').distinct()
+                #print(peer_review)
+                
+                no_of_reviews_needed = Student.objects.filter(group = student.group).count() - 1
+                
+
+                # if peer_review.count() != no_of_reviews_needed:
+                #     reviewed =  "reviews missing"
+                
+                # elif peer_review.count() == no_of_reviews_needed:
+                #     reviewed =  "reviews completed"
+
+
+
+                edited_sub = Submission.objects.filter(student = student, patch = patch, is_original = False)
+                if edited_sub:
+                    edit_count = Submission_edits.objects.filter(submission__in = edited_sub).count()
+              
+            except org_sub.DoesNotExist:
+                pass
+
+           
+            sub_sub_arr.append(sub)
+            sub_sub_arr.append(reviewed)
+            sub_sub_arr.append(edit_count)
+            sub_arr.append(sub_sub_arr)
+        
+        arr.append(sub_arr)
+        zipped = zip(students, arr)
     
-    print(sub_dict)
+        
+
+
+    
+    
 
 
 
@@ -158,7 +201,9 @@ def teacher_home(request):
                                                          'final_quilt' : final_quilt,
                                                          'students': students,
                                                          'submissions': submissions,
-                                                         'sub_dict' : sub_dict
+                                                         'sub_edits' : sub_edits,
+                                                         'arr' : arr,
+                                                         'zipped': zipped
                                                          })
 
 
@@ -490,11 +535,13 @@ def evaluate_round(pk, user):
     previous_round = Round.objects.filter(patch__id = pk).latest('id')
     scripts = Script.objects.filter(script__patch__id = pk).order_by('-score')
     patch = Patch.objects.get(id = pk)
-    if previous_round.what_round == 4:
+    if previous_round.what_round > 4:
         scores = [s.score for s in scripts]
         values = [s.value for s in scripts]
         vals, _ = estimate_values(scores, vals=values)
+       
         for script, val in zip(scripts, vals):
+            
             script.value = val
             script.save()
 
@@ -512,7 +559,7 @@ def evaluate_round(pk, user):
     #         s.save()
     #         i+=1
 
-    #     scripts = scripts.order_by('-value')
+    scripts = scripts.order_by('-value')
 
     new_round = previous_round.what_round + 1
     Round.objects.create(patch = patch, what_round = new_round)

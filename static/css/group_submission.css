@@ -58,7 +58,7 @@ button {
 }
 
 .review {
-    width:100%;
+    max-width:100%;
     min-height:200px;
     border: 1px solid rgba(0,0,0,0.1);
     border-radius:10px;

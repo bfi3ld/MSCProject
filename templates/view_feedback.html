@@ -23,14 +23,14 @@
         <div class = "submission_container">
     
             {% if submission %}
-            
+            <a class = "edit" href = "{% url 'edit_submission' patch.id %}">Edit submission</a>
                 <div class = "submission_content"><p> {{ submission.content|safe }} </p></div> 
                      
         
             {% else %}
             <div class = "status_bar">No submission yet</div>
             {% endif %}
-            <a href = "{% url 'edit_submission' patch.id %}">Edit submission</a>
+            
 
         </div>
 

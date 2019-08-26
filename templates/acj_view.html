@@ -22,7 +22,7 @@
     
     <div class = "script_container">
         <div class ="script">
-            {{ next_pair.script_a.script.content }}
+            {{ next_pair.script_a.script.content |safe }}
         </div>
         <div class ="selection"><a href = "{% url 'generate_pair' next_pair.patch.id next_pair.id next_pair.script_a.id %}">Script a is better</a>
         </div>
@@ -30,7 +30,7 @@
     </div>
     <div class = "script_container">
         <div class ="script">
-            {{ next_pair.script_b.script.content }}
+            {{ next_pair.script_b.script.content |safe }}
         </div>
         <div class ="selection"><a href = "{% url 'generate_pair' next_pair.patch.id next_pair.id next_pair.script_b.id %}">Script b is better</a>
         </div>

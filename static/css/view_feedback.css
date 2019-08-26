@@ -36,11 +36,19 @@ p {
    padding:30px;
    
    height:500px;
-   border:solid 1px rgba(0,0,0,0.1);
-   box-shadow: 1px 1px 1px 1px rgba(0,0,0, 0.1);
+   
+   box-shadow: 2px 2px 2px 2px rgba(0,0,0, 0.1);
   
 }
+.edit {
+    width:100px;
+    height:40px;
+    background-color:rgb(107,122,143);
+    border-radius:10px;
+    border:solid 1px rgba(0,0,0,0.1);
+   box-shadow: 1px 1px 1px 1px rgba(0,0,0, 0.1);
 
+}
 .tutor_feedback {
     width:100%;
     /*background-color:white;*/
