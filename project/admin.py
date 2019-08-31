@@ -14,6 +14,9 @@ class SubmissionAdmin(admin.ModelAdmin):
 class Submission_editsAdmin(admin.ModelAdmin):
     list_display = ('id', 'submission', 'date_time')
 
+class ScriptAdmin(admin.ModelAdmin):
+    list_display = ('id', 'score', 'value')
+
 
 admin.site.register(models.Submission, SubmissionAdmin)
 admin.site.register(models.User)
@@ -22,6 +25,6 @@ admin.site.register(models.Student)
 admin.site.register(models.Peer_review_rubrik)
 admin.site.register(models.Feedback)
 admin.site.register(models.Submission_edits, Submission_editsAdmin)
-admin.site.register(models.Script)
+admin.site.register(models.Script, ScriptAdmin)
 admin.site.register(models.Judgement)
 admin.site.register(models.Round)

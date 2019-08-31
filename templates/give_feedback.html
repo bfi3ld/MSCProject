@@ -17,14 +17,16 @@
             
         </div>
 
-
+        <h1>My group</h1>
      <div class = "group_display">
+         
          <div class = "group">
         
         {% if submissions %}
         {% for s in submissions %}
             <div class = "member">
                 <div class = member_name><a href = "{% url 'group_submission' patch.id s.id  %}"><h3>{{ s.student.user.username }}</h3></a></div>
+                <i class="fa fa-user" id = "user_icon"></i>
             </div>
         {% endfor %}
         {% else %}

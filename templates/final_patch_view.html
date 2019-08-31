@@ -17,7 +17,7 @@
             <div class="individual_submission">
                 <input type="checkbox" name="{{ s.patch.id }}" value="{{ s.patch.id }}">
                 <h3>{{ s.patch.patch_title }}</h3>
-                <p>{{ s.content }}</p>
+                <p>{{ s.content | safe }}</p>
 
             </div>
             {% endfor %}

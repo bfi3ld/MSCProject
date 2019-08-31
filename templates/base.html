@@ -7,7 +7,7 @@
 
 <head>
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
-        
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     
     {% block import_block %}
         <!--Other file imports go here-->
@@ -24,9 +24,14 @@
     
 <header>
         
-            {% if user.is_authenticated %}<p>Logged in as {{user.username}}</p>
-           
+            {% if user.is_authenticated %}<p class = "header-items">Logged in as {{user.username}}</p><a href = "{% url 'log_out' %}"><p class = "header-items">Log out</p></a>
+            {% if user.is_student %}
+            <a href = "{% url 'student_home' %}"><p class = "header-items">Home</p></a>
+            {% else %}
+            <a href = "{% url 'teacher_home' %}"><p class = "header-items">Home</p></a>
             {% endif %}
+            {% endif %}
+       
 </header>
 
    

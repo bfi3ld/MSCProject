@@ -6,11 +6,17 @@ header {
     margin-top:0;
     padding:0;
     display:inline-flex;
+    
+    
 
     
     
 }
-
+.header-items {
+    margin-left:20px;
+    color:white;
+   
+}
 
 
 
@@ -23,6 +29,7 @@ header {
     text-align:center;
     color:black;
     font-family: courier;
+    
     
 }
 h1 {
