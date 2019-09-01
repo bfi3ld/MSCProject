@@ -15,7 +15,7 @@
             
 
             <div class = "submission_display">
-                    <a class = "button" href = "{% url 'add_rubrik' patch.id %}">Add peer-review rubrik</a>
+                    <a class = "button" href = "{% url 'add_rubric' patch.id %}">Add peer-review rubrik</a>
                     <a class = "button" href = "{% url 'new_judge_session' patch.id %}">Judge submissions</a>
             {% if peer_rubrik %}
             {% for p in peer_rubrik %}

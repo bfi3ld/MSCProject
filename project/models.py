@@ -26,7 +26,7 @@ class Patch(models.Model):
 
 class Submission(models.Model):
     patch = models.ForeignKey(Patch, on_delete=models.CASCADE)
-    content = HTMLField('content')  
+    content = HTMLField('content')
     published_date = models.DateTimeField(blank=True, null=True)
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     is_original = models.BooleanField(default=False)
@@ -34,8 +34,8 @@ class Submission(models.Model):
 
 class Submission_edits(models.Model):
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE)
-    deleted = models.TextField(null = True)
-    added = models.TextField(null = True)
+    deleted = models.TextField(null=True)
+    added = models.TextField(null=True)
     date_time = models.DateTimeField()
 
 
@@ -52,28 +52,26 @@ class Feedback(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField()
 
-#Script b is set to null=True so one duplicate script can be added after object is created, if the scripts are
-#odd numbered.
+
+# Script b is set to null=True so one duplicate script can be added after object is created, if the scripts are
+# odd numbered.
 class Judgement(models.Model):
-    patch = models.ForeignKey('Patch', on_delete = models.CASCADE)
-    script_a = models.ForeignKey('Script', related_name = 'script_a', on_delete = models.CASCADE)
-    script_b = models.ForeignKey('Script',related_name = 'script_b', on_delete = models.CASCADE, null = True)
-    winner = models.ForeignKey('Script', on_delete = models.CASCADE, null = True)
-    what_round = models.ForeignKey('Round', on_delete = models.CASCADE)
-    judge = models.ForeignKey('User', on_delete = models.CASCADE)
+    patch = models.ForeignKey('Patch', on_delete=models.CASCADE)
+    script_a = models.ForeignKey('Script', related_name='script_a', on_delete=models.CASCADE)
+    script_b = models.ForeignKey('Script', related_name='script_b', on_delete=models.CASCADE, null=True)
+    winner = models.ForeignKey('Script', on_delete=models.CASCADE, null=True)
+    what_round = models.ForeignKey('Round', on_delete=models.CASCADE)
+    judge = models.ForeignKey('User', on_delete=models.CASCADE)
     date_time = models.DateTimeField()
 
 
 class Script(models.Model):
-    script = models.OneToOneField('Submission', on_delete = models.CASCADE)
-    score = models.IntegerField(default = '0')
-    value = models.DecimalField(default = '1.0', max_digits= 100, decimal_places = 5)
+    script = models.OneToOneField('Submission', on_delete=models.CASCADE)
+    score = models.IntegerField(default='0')
+    value = models.DecimalField(default='1.0', max_digits=100, decimal_places=5)
 
-    
 
 class Round(models.Model):
-    patch = models.ForeignKey('Patch', on_delete = models.CASCADE)
-    what_round = models.IntegerField(null = True)
-    reliability = models.IntegerField(null = True)
-
-
+    patch = models.ForeignKey('Patch', on_delete=models.CASCADE)
+    what_round = models.IntegerField(null=True)
+    reliability = models.IntegerField(null=True)

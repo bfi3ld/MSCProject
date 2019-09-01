@@ -1,2 +1,2 @@
 import sys, os
-sys.path.append(r'C:\Users\Hanna\Google Drive (hanna.baekkevold@gmail.com)\MSCProject')
+sys.path.append(r'C:\Users\XPS\Documents\Hannas project STAY OUT!!\MSCProject')

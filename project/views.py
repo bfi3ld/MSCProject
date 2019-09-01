@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.utils.timezone import datetime
 from django.contrib.auth import login, logout, authenticate
@@ -10,8 +11,20 @@ from diff_match_patch import diff_match_patch
 from bs4 import BeautifulSoup
 
 
-def test(request):
-    return render(request, 'test.html')
+def project_login_required(user_allowed):
+    def wrap(function):
+        def wrapper(request, *args, **kw):
+            user = request.user
+            if user.is_authenticated and (
+                    (user_allowed == 'teacher' and user.is_teacher) or \
+                    (user_allowed == 'student' and user.is_student)):
+                return function(request, *args, **kw)
+            else:
+                return redirect('index')
+
+        return wrapper
+
+    return wrap
 
 
 def index(request):
@@ -65,6 +78,7 @@ def log_out(request):
     return redirect('index')
 
 
+@project_login_required(user_allowed='teacher')
 def add_student(request):
     if request.method == 'POST':
         register_form = UserRegisterForm(request.POST)
@@ -88,6 +102,7 @@ def add_student(request):
     return render(request, 'add_student.html', {'register_form': register_form, 'student_form': student_form})
 
 
+@project_login_required(user_allowed='teacher')
 def add_patch(request):
     if request.method == 'POST':
         patch_form = CreatePatchForm(request.POST)
@@ -107,7 +122,8 @@ def add_patch(request):
         'patch_form': patch_form})
 
 
-def add_rubrik(request, pk):
+@project_login_required(user_allowed='teacher')
+def add_rubric(request, pk):
     patch = Patch.objects.get(id=pk)
 
     if request.method == 'POST':
@@ -125,13 +141,14 @@ def add_rubrik(request, pk):
     })
 
 
+@project_login_required(user_allowed='teacher')
 def teacher_home(request):
     students = Student.objects.all()
     patches = Patch.objects.filter(is_final=False)
     final_quilt = Patch.objects.get(is_final=True)
     submissions = Submission.objects.all().order_by('student', 'patch')  # edits = Submission_edits.objects.
     sub_edits = Submission.objects.all()
-    
+
     arr = []
     for student in students:
         sub_arr = []
@@ -185,6 +202,7 @@ def teacher_home(request):
     })
 
 
+@project_login_required(user_allowed='teacher')
 def teacher_patch_view(request, pk):
     patch = Patch.objects.get(id=pk)
     try:
@@ -199,10 +217,12 @@ def teacher_patch_view(request, pk):
     })
 
 
+@project_login_required(user_allowed='teacher')
 def teacher_patches(request):
     return render(request, 'teacher_patches.html')
 
 
+@project_login_required(user_allowed='student')
 def make_submission(request, pk):
     if request.method == 'POST':
         form = SubmissionForm(request.POST)
@@ -224,6 +244,7 @@ def make_submission(request, pk):
     return render(request, 'make_submission.html', context={'form': form})
 
 
+@project_login_required(user_allowed='student')
 def edit_submission(request, pk):
     patch = Patch.objects.get(pk=pk)
     display_html = ''
@@ -279,6 +300,7 @@ def edit_submission(request, pk):
     })
 
 
+@project_login_required(user_allowed='student')
 def patch_view(request, pk):
     patch = Patch.objects.get(pk=pk)
 
@@ -292,6 +314,7 @@ def patch_view(request, pk):
         'submission': submission})
 
 
+@project_login_required(user_allowed='student')
 def final_patch_view(request):
     patch = Patch.objects.get(is_final=True)
     submissions = Submission.objects.filter(
@@ -303,6 +326,7 @@ def final_patch_view(request):
     })
 
 
+@project_login_required(user_allowed='student')
 def give_feedback(request, pk):
     user = Student.objects.get(user=request.user)
     own_group = user.group
@@ -321,6 +345,7 @@ def give_feedback(request, pk):
     })
 
 
+@project_login_required(user_allowed='student')
 def group_submission(request, pk, subid):
     patch = Patch.objects.get(pk=pk)
     submission = Submission.objects.get(id=subid)
@@ -344,6 +369,7 @@ def group_submission(request, pk, subid):
     })
 
 
+@project_login_required(user_allowed='student')
 def submit_peer_review(request, pk, subid, rubrik):
     submission = Submission.objects.get(id=subid)
     author = request.user
@@ -360,6 +386,7 @@ def submit_peer_review(request, pk, subid, rubrik):
     return redirect('group_submission', pk=pk, subid=subid)
 
 
+@project_login_required(user_allowed='student')
 def view_feedback(request, pk):
     student = Student.objects.get(user=request.user)
     submission = Submission()
@@ -383,6 +410,7 @@ def view_feedback(request, pk):
     })
 
 
+@project_login_required(user_allowed='student')
 def student_home(request):
     patches = Patch.objects.filter(is_final=False)
     final_patch = Patch.objects.get(is_final=True)
@@ -391,17 +419,19 @@ def student_home(request):
         'final_patch': final_patch})
 
 
+@project_login_required(user_allowed='student')
 def stitch_patches(request):
     if request.method == 'POST':
-        form = SubmissionForm(request.POST)
-
-        if form.is_valid():
-            submission = form.save(commit=False)
-            submission.student = Student.objects.get(user=request.user)
-            submission.patch = Patch.objects.get(id=pk)
-            submission.published_date = datetime.now()
-            submission.is_original = False
-            submission.save()
+        raise NotImplemented('need to do')
+        # form = SubmissionForm(request.POST)
+        #
+        # if form.is_valid():
+        #     submission = form.save(commit=False)
+        #     submission.student = Student.objects.get(user=request.user)
+        #     submission.patch = Patch.objects.get(id=pk)
+        #     submission.published_date = datetime.now()
+        #     submission.is_original = False
+        #     submission.save()
 
     patch_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
     patches = Patch.objects.filter(id__in=patch_ids)
@@ -419,8 +449,9 @@ def stitch_patches(request):
         'feedback': feedback})
 
 
-# Function that initiates a new judgement session.
+@project_login_required(user_allowed='teacher')
 def new_judge_session(request, pk):
+    """Function that initiates a new judgement session."""
     patch = Patch.objects.get(id=pk)
     first_round = Round.objects.create(patch=patch, what_round=1)
     submissions = Submission.objects.filter(patch__id=pk, is_original=True)
@@ -456,6 +487,7 @@ def setup_round(pk, scripts, user):
     return redirect('generate_pair', pk=pk, pair_id=pair_id, winner=0)
 
 
+@project_login_required(user_allowed='teacher')
 def generate_pair(request, pk, pair_id, winner):
     current_pair = Judgement.objects.get(id=pair_id)
     this_round = current_pair.what_round
@@ -475,7 +507,7 @@ def generate_pair(request, pk, pair_id, winner):
     if pairs:
         next_pair = pairs.first()
     else:
-   
+
         user = request.user
         return evaluate_round(pk, user)
 

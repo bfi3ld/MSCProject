@@ -1,6 +1,8 @@
 import os
 import django
 import datetime
+from django.db import connection
+import subprocess
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "MSCproject.settings")
 django.setup()
@@ -75,13 +77,13 @@ patches = [{
 
 # ========= SUBMISSION ===========
 submissions = [{
-    'patch': 'MyPatch2',
+    'patch': 'MyPatch1',
     'content': 'I got hit in the head with a can of soda yesterday. Luckily for me, it was a soft drink.',
     'published_date': datetime.datetime(2019, 2, 5),
     'student': "mystudent1@trimit.com",
     'is_original': True,
 }, {
-    'patch': 'MyPatch2',
+    'patch': 'MyPatch1',
     'content': 'I’m super friendly with 25 letters of the alphabet.I just don’t know why.',
     'published_date': datetime.datetime(2019, 2, 5),
     'student': "mystudent2@trimit.com",
@@ -108,7 +110,7 @@ submissions = [{
     'patch': 'MyPatch3',
     'content': 'mysubmission3',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent3@trimit.com",
+    'student': "mystudent1@trimit.com",
     'is_original': True,
 }]
 
@@ -144,6 +146,9 @@ def add_submission(patch, content, published_date, student, is_original):
 def clean_db():
     for tbl in (User, Script, Round, Judgement):
         tbl.objects.all().delete()
+    # with connection.cursor() as cursor:
+    #     cursor.execute("ALTER TABLE project_judgement AUTO_INCREMENT=1;")
+    # subprocess.call("python manage.py sqlsequencereset project".split())
 
 
 def populate():
