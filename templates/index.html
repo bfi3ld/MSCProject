@@ -12,8 +12,10 @@
     {% endblock %}
 
 {% block content %}
+<div class = "page_content">
  <div class = buttons>
  <a id = "log_in" href = "{% url 'log_in' %}"><p>Log in</p></a>
  <a id = "register" href = "{% url 'teacher_register' %}"><p>Register as teacher</p></a>
+</div>
 </div>
 {% endblock %}

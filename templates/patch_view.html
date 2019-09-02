@@ -25,11 +25,6 @@
                     <p>Status:
                 {% if submission %}
                     Submitted on {{ submission.published_date }}
-                {% else %}
-                        Not submitted</p>
-                        <a class = "button" href = "{% url 'make_submission' patch.id %}"><p>Make submission</p></a>
-                {% endif %}
-            </h3>
                 </div>
                 <div class = "patch" id = "sub">
                     {{ submission.content|safe }}
@@ -37,6 +32,15 @@
                    
 
                 </div>
+                {% else %}
+                        Not submitted</p>
+                        <a class = "button" href = "{% url 'make_submission' patch.id %}"><p>Make submission</p></a>
+                    </div>
+                {% endif %}
+            
+                
+                
+              
             </div>
         </div>
 </div>

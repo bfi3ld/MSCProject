@@ -146,7 +146,7 @@ def teacher_home(request):
     students = Student.objects.all()
     patches = Patch.objects.filter(is_final=False)
     final_quilt = Patch.objects.get(is_final=True)
-    submissions = Submission.objects.all().order_by('student', 'patch')  # edits = Submission_edits.objects.
+    submissions = Submission.objects.all().order_by('student', 'patch')  
     sub_edits = Submission.objects.all()
 
     arr = []
@@ -154,15 +154,15 @@ def teacher_home(request):
         sub_arr = []
         for patch in patches:
             sub_sub_arr = []
-            sub = '&#10060'
-            edit_count = '&#10060'
-            reviewed = '&#10060'
+            sub = '&#10006'
+            edit_count = 0
+            reviewed = '&#10006'
             try:
                 org_sub = Submission.objects.get(student=student, patch=patch, is_original=True)
                 if org_sub.published_date < org_sub.patch.submission_date:
-                    sub = '&#9989;'
+                    sub = '&#10004;'
                 else:
-                    sub = 'late'
+                    sub = '!'
 
                 peer_review = Feedback.objects.filter(author=student.user, submission__patch=patch).values(
                     'submission').distinct()
@@ -170,11 +170,11 @@ def teacher_home(request):
 
                 no_of_reviews_needed = Student.objects.filter(group=student.group).count() - 1
 
-                # if peer_review.count() != no_of_reviews_needed:
-                #     reviewed =  "reviews missing"
+              
+                     
 
-                # elif peer_review.count() == no_of_reviews_needed:
-                #     reviewed =  "reviews completed"
+                if peer_review.count() == no_of_reviews_needed:
+                     reviewed =  "&#10004;"
 
                 edited_sub = Submission.objects.filter(student=student, patch=patch, is_original=False)
                 if edited_sub:
@@ -314,15 +314,17 @@ def patch_view(request, pk):
         'submission': submission})
 
 
-@project_login_required(user_allowed='student')
-def final_patch_view(request):
+@login_required()
+def final_patch_view(request, student_id):
     patch = Patch.objects.get(is_final=True)
+    student= Student.objects.get(id = student_id)
     submissions = Submission.objects.filter(
-        student=Student.objects.get(user=request.user), is_original=True)
+        student=student, is_original=True)
 
     return render(request, 'final_patch_view.html', context={
         'patch': patch,
-        'submissions': submissions
+        'submissions': submissions,
+        'student':student
     })
 
 
@@ -335,11 +337,11 @@ def give_feedback(request, pk):
 
     patch = Patch.objects.get(id=pk)
 
-    submissions = Submission.objects.filter(
+    submission = Submission.objects.filter(
         patch__id=pk, student__in=group_members, is_original=True)
-    print(submissions)
+   
     return render(request, 'give_feedback.html', context={
-        'submissions': submissions,
+        'submission': submission,
         'patch': patch
 
     })
@@ -356,7 +358,7 @@ def group_submission(request, pk, subid):
     peer_review_id = peer_review.values('peer_review_rubrik')
     peer_rubrik = Peer_review_rubrik.objects.filter(
         patch=patch).exclude(id__in=peer_review_id)
-    print(peer_review_id)
+   
 
     form = PeerReviewForm()
 
@@ -377,6 +379,8 @@ def submit_peer_review(request, pk, subid, rubrik):
     form = PeerReviewForm(request.POST)
 
     if form.is_valid():
+       
+        
         peer_review = form.save(commit=False)
         peer_review.submission = submission
         peer_review.author = author
@@ -399,7 +403,7 @@ def view_feedback(request, pk):
         pass
 
     peer_reviews = Feedback.objects.filter(
-        submission=submission, author__is_student=True).order_by('peer_review_rubrik')
+        submission__in = Submission.objects.filter(patch=pk, student=Student.objects.get(user=request.user)), author__is_student=True).order_by('peer_review_rubrik')
     teacher_feedback = Feedback.objects.filter(
         submission=submission, author__is_teacher=True)
     return render(request, 'view_feedback.html', context={
@@ -414,37 +418,48 @@ def view_feedback(request, pk):
 def student_home(request):
     patches = Patch.objects.filter(is_final=False)
     final_patch = Patch.objects.get(is_final=True)
+    student= Student.objects.get(user = request.user)
+    student_id = student.id
     return render(request, 'student_home.html', context={
         'patches': patches,
-        'final_patch': final_patch})
+        'final_patch': final_patch,
+        'student_id':student_id
+        })
 
 
-@project_login_required(user_allowed='student')
-def stitch_patches(request):
+@login_required()
+def stitch_patches(request, student_id):
     if request.method == 'POST':
-        raise NotImplemented('need to do')
-        # form = SubmissionForm(request.POST)
-        #
-        # if form.is_valid():
-        #     submission = form.save(commit=False)
-        #     submission.student = Student.objects.get(user=request.user)
-        #     submission.patch = Patch.objects.get(id=pk)
-        #     submission.published_date = datetime.now()
-        #     submission.is_original = False
-        #     submission.save()
+        
+        form = SubmissionForm(request.POST)
+        
+        if form.is_valid():
+            submission = form.save(commit=False)
+            submission.student = Student.objects.get(user=request.user)
+            submission.patch = Patch.objects.get(id=pk)
+            submission.published_date = datetime.now()
+            submission.is_original = False
+            submission.save()
 
     patch_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
     patches = Patch.objects.filter(id__in=patch_ids)
+    student = Student.objects.get(id = student_id)
 
-    original_submissions = Submission.objects.filter(student__user=request.user, patch__id__in=patches,
-                                                     is_original=True)
-    latest_submissions = Submission.objects.filter(student__user=request.user, patch__id__in=patches, is_original=False)
-    submissions = zip(original_submissions, latest_submissions)
+    original_submissions = Submission.objects.filter(student__id = student_id, patch__id__in=patches,
+                                                     is_original=True).order_by('patch__id')
+
+                                                  
+    latest_submissions = Submission.objects.filter(student__id = student_id, patch__id__in=patches, is_original=False)
+
+    
+     
     submission_edits = Submission_edits.objects.filter(submission__id__in=latest_submissions)
     feedback = Feedback.objects.filter(submission__in=original_submissions)
+    print(feedback)
 
     return render(request, 'stitch_patches.html', context={
-        'submissions': submissions,
+        'original':original_submissions,
+        'latest':latest_submissions,
         'submission_edits': submission_edits,
         'feedback': feedback})
 

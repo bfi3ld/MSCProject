@@ -1,4 +1,4 @@
-Skip to content
+
  
     
 {% extends 'base.html' %}
@@ -27,24 +27,22 @@ Skip to content
              
             </th>
             {% endfor %}
-            <th><div class = "patches"><a href = "{% url 'final_patch_view' %}">{{ final_quilt.patch_title }}</a></div></th>
+            <th><div class = "patches"><a>{{ final_quilt.patch_title }}</a></div></th>
             
            
            
                
                    
                       
-                        <tr><td></td>
+                      
                         {% for a in patches %}
-                        <td>Submitted</td>
-                        <td>Reviewed</td>
-                        <td>Edited</td>
+                       
                         {% endfor %}
                         </tr>
                             {% for s, a in zipped %}
                             <tr>
-                <td>{{ s.user.username }}</td>
-                
+                <td><a href = "{% url 'final_patch_view' s.id %}">{{ s.user.username }} </a><td>
+                            
                 
 
                 

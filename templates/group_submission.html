@@ -29,15 +29,18 @@
             <div class = "submission"> <h3>{{ submission.student.user.username }}</h3>{{ submission.content }} </div>
             
             <div class = "feedback_container">
-                    {% if peer_rubrik %}
+                
+                <h3>Give feedback</h3>
+                 
                 {% for review in peer_review %}
                 <div class = "review">
                 <h3>{{ review.author.user.username }}</h3>
                 {{ review.review}}
+                
                 </div>
                 {% endfor %}
                 
-               
+                
                {% for rubrik in peer_rubrik %}
         
                 <div class = "instruction">
@@ -51,12 +54,11 @@
                  </form>
               
                 {% endfor %}
-                {% else %}
-                <p>Peer review is not ready</p>
+              
                 
 
                 
-                {% endif %}
+                
 
                
               

@@ -1,7 +1,7 @@
 from django import forms
 from project.models import User
 from project.models import Submission, User, Patch, Student, Peer_review_rubrik, Feedback, Submission_edits
-from tinymce.widgets import TinyMCE
+
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.db import transaction
 from django.contrib.auth.forms import AuthenticationForm

@@ -22,8 +22,8 @@
          
          <div class = "group">
         
-        {% if submissions %}
-        {% for s in submissions %}
+        {% if submission %}
+        {% for s in submission %}
             <div class = "member">
                 <div class = member_name><a href = "{% url 'group_submission' patch.id s.id  %}"><h3>{{ s.student.user.username }}</h3></a></div>
                 <i class="fa fa-user" id = "user_icon"></i>
