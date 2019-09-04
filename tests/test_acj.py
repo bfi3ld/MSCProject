@@ -9,6 +9,7 @@ import pytest
     (1, 2, 0.26894),
     (None, None, None)
 ])
+
 def test_calc_probability(v1, v2, exp):
     if exp is None:
         with pytest.raises(TypeError):
