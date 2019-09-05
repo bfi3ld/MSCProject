@@ -7,15 +7,15 @@
 
 <head>
         <link rel="stylesheet" href="{% static 'css/acj_view.css' %}">
-        
-        
-
-
-        
-        <nav>Quit session</nav>         
+    
 </head>
 
 <body>
+        <div class = "header">
+        
+
+                <a href = "{% url 'teacher_home'%}">Quit session </a><h3>Round {{ next_pair.what_round.what_round}}</h3>         
+        </div>
         
 <div class = "page">
     <div class = "page_content">
@@ -24,7 +24,7 @@
         <div class ="script">
             {{ next_pair.script_a.script.content |safe }}
         </div>
-        <div class ="selection"><a href = "{% url 'generate_pair' next_pair.patch.id next_pair.id next_pair.script_a.id %}">Script a is better</a>
+        <div class ="selection"><a class = "buttons" href  = "{% url 'generate_pair' next_pair.patch.id next_pair.id next_pair.script_a.id %}">Script a is better</a>
         </div>
 
     </div>
@@ -32,7 +32,7 @@
         <div class ="script">
             {{ next_pair.script_b.script.content |safe }}
         </div>
-        <div class ="selection"><a href = "{% url 'generate_pair' next_pair.patch.id next_pair.id next_pair.script_b.id %}">Script b is better</a>
+        <div class ="selection"><a class = "buttons" href = "{% url 'generate_pair' next_pair.patch.id next_pair.id next_pair.script_b.id %}">Script b is better</a>
         </div>
     </div>
 </div>

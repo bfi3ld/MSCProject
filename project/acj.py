@@ -9,7 +9,7 @@ def estimate_values(scores, vals=None, max_iter=100, tol=0.001):
 
     i = 0
     while get_error(scores, exp_scores) > tol and i < max_iter:
-        vals, exp_scores = get_iteration_values(scores, vals)
+        vals, exp_scores = get_all_values(scores, vals)
 
         i += 1
         print(exp_scores, get_error(scores, exp_scores))

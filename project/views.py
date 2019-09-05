@@ -383,13 +383,13 @@ def submit_peer_review(request, pk, subid, rubrik):
     if request == POST:
         if form.is_valid():
         
-        form = PeerReviewForm(request.POST)
-        peer_review = form.save(commit=False)
-        peer_review.submission = submission
-        peer_review.author = author
-        peer_review.date = datetime.now()
-        peer_review.peer_review_rubrik = peer_rubrik
-        peer_review.save()
+            form = PeerReviewForm(request.POST)
+            peer_review = form.save(commit=False)
+            peer_review.submission = submission
+            peer_review.author = author
+            peer_review.date = datetime.now()
+            peer_review.peer_review_rubrik = peer_rubrik
+            peer_review.save()
         
     return redirect('group_submission', pk=pk, subid=subid)
 
@@ -465,7 +465,6 @@ def teacher_feedback(request, sub_id):
     submission = Submission.objects.get(id = sub_id)
     form = PeerReviewForm()
     if request.method == 'POST':
-        
         form = PeerReviewForm(request.POST)
         
         if form.is_valid():
@@ -484,12 +483,18 @@ def teacher_feedback(request, sub_id):
 
 @project_login_required(user_allowed='teacher')
 def new_judge_session(request, pk):
-    """Function that initiates a new judgement session."""
+    """Function that checks if there are existing rounds of judgements in the database. If its not, 
+        it initiates a new round. Otherwise it continues the judging based on the existing values and the new
+        data will be used to update does values in line with ACJ(Pollit 2012)"""
     patch = Patch.objects.get(id=pk)
-    first_round = Round.objects.create(patch=patch, what_round=1)
     submissions = Submission.objects.filter(patch__id=pk, is_original=True)
-    for s in submissions:
-        Script.objects.create(script=s)
+    next_round = Round.objects.filter(patch=patch).latest('id')
+    if not next_round:
+        next_round = Round.objects.create(patch=patch, what_round=1)
+        
+        for s in submissions:
+            Script.objects.create(script=s)
+ 
 
     scripts = Script.objects.filter(script__in=submissions).order_by('score')
     user = request.user
