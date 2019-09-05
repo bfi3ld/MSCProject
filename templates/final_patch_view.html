@@ -10,7 +10,7 @@
         <p>Select what patches to use for the final submission. 
     </div>
     <div class="past_submissions">
-        <form action="{% url 'stitch_patches' student.id %}" class="form" method="post">
+        <form action="{% url 'stitch_patches' student.id %}" method="post">
             {% csrf_token %}
 
             {% for s in submissions %}

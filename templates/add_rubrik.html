@@ -7,8 +7,9 @@
     {% endblock %}
 
 {% block content %}
-<div class = "form_container">
-<form action = "" class = "form" method="post">
+<div class = "form">
+<form action = "" method="post">
+    <h3>Add a rubric</h3>
         {% csrf_token %}
         {{ form }}
        

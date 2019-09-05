@@ -9,15 +9,18 @@
     {% endblock %}
 
 {% block content %}
+<div class = "form">
   <form action="" method="post">
+    <h3>Add a student</h3>
     {% csrf_token %}
-    <table>
+    
     {{ register_form.as_table }}
     {{ student_form.as_table }}
     
   
-    </table>
+    
     <input type="submit" name = "save" value="Save and return">
     <input type="submit" name = "save_and_add_new" value="Save and add new">
   </form>
+</div>
 {% endblock %}

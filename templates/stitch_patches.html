@@ -13,6 +13,10 @@
     <div class= "patch_title">
         <p>{{o.patch.patch_title}}</p>
     </div>
+    {% if user.is_teacher %}
+
+    
+    {% endif %}
         <div class = "patch_content">
       
             <div class = "submission_history">
@@ -22,11 +26,12 @@
                 <div class = "collapsable" id = "{{ o.id }}">
                     {{ o.content|safe }}
                 </div>
-                <div class = "edit">
+               
                         {% for l in latest %}
                         {% if o.patch == l.patch %}
                         {% for se in submission_edits %}
                         {% if se.submission.id == l.id %}
+                        <div class = "edit">
                         <div class = "edit_border">
                    
                
@@ -40,54 +45,58 @@
                         </div>
                    
                     </div>
+                    
                 </div>
-                        {% endif %}
-                        {% endfor %}
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                
+                       
             
                    
                     <div class = "latest_submission" id = "{{l.id}}">
                         <p>Latest submitted on {{l.published_date}}</p>
                         {{ l.content|safe }}
                     </div>
-                    {% endif %}
+                    
                     {% endfor %}   
                 
            
-            </div>
-                       
-                       
-    
-               
-    
-
-                <div class = "final_submission">
-
-                </div>
-
             
-                <div class = "feedback_container">
-                        {% if feedback %}
+                       
+                       
     
-                        {% for f in feedback %}
-                        {% if f.submission.id == o.id %}
+                </div>
     
-                        <div class = ind_feedback><h5>{{ f.author }}</h5> <p>{{ f.review }}</p> </div>
-                            {% endif %}
-                            {% endfor %}
-                            {% endif %}
-                    </div>
+                    <div class = "feedback_container">
+                            {% if feedback %}
+            
+                            {% for f in feedback %}
+                            {% if f.submission.id == o.id %}
+            
+                            <div class = ind_feedback><h5>{{ f.author }}</h5> <p>{{ f.review }}</p> </div>
+                                {% endif %}
+                                {% endfor %}
+                                {% endif %}
+                        </div>
+        
+            
+                
 
 
 
                        
-       
-       
+                    </div>
+      
        
                 {% endfor %}
        
        
-        </div>
+      
 
 
-        </div>
+        
+
+        
+              </div>
         {% endblock %}

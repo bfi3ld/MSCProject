@@ -23,22 +23,17 @@ class EditSubmissionForm(forms.Form):
 
 
 class UserRegisterForm(UserCreationForm):
-    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    email = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-style'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-style'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-style'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-style'}))
     class Meta(UserCreationForm.Meta):
         model = User
         fields = UserCreationForm.Meta.fields + ('email',)
-        #def __init__(self, *args, **kwargs):
-         #   super(myUserCreationForm, self).__init__(*args, **kwargs)
-
-           # self.fields['username'].widget.attrs['class'] = 'form-control'
-           # self.fields['password1'].widget.attrs['class'] = 'form-control'
-           # self.fields['password2'].widget.attrs['class'] = 'form-control'
+  
 
 class CreateStudentForm(forms.ModelForm):
-    group = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    group = forms.IntegerField(widget=forms.TextInput(attrs={'class': 'form-style'}))
 
     class Meta():
         model = Student
@@ -59,10 +54,10 @@ class CustomAuthenticationForm(AuthenticationForm):
 
 
 class CreatePatchForm(forms.ModelForm):
-    patch_title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'style':'width:800px'}))
-    patch_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
-    submission_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-control'}))
-    peer_review_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-control'}))
+    patch_title = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-style'}))
+    patch_description = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-text-style'}))
+    submission_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-style'}))
+    peer_review_date = forms.DateField(widget=forms.TextInput(attrs={'class': 'form-style'}))
 
 
     class Meta:
@@ -70,14 +65,14 @@ class CreatePatchForm(forms.ModelForm):
         fields = ('patch_title', 'patch_description', 'submission_date', 'peer_review_date')
 
 class CreateRubrikForm(forms.ModelForm):
-    instruction = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    instruction = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-text-style'}))
     class Meta:
         model = Peer_review_rubrik
         fields = ('instruction',)
 
 
 class PeerReviewForm(forms.ModelForm):
-    review = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-control'}))
+    review = forms.CharField(widget=forms.Textarea(attrs={'class': 'form-style'}))
     
     class Meta:
         model = Feedback

@@ -25,21 +25,21 @@ def get_error(scores, exp_scores):
     return max([a - b for a, b in zip(scores, exp_scores)])
 
 
-def get_iteration_values(script_scores, script_values):
+def get_all_values(script_scores, script_values):
     """Function that returns all the new values and new scores."""
     new_values = []
     new_expected_scores = []
 
     for i, (score, value) in enumerate(zip(script_scores, script_values)):
         other_scripts_values = [v for j, v in enumerate(script_values) if i != j]
-        new_value, new_expected_score = get_iteration_value(score, value, other_scripts_values)
+        new_value, new_expected_score = get_single_value(score, value, other_scripts_values)
         new_values.append(new_value)
         new_expected_scores.append(new_expected_score)
 
     return new_values, new_expected_scores
 
 
-def get_iteration_value(script_score, script_value, other_scripts_values):
+def get_single_value(script_score, script_value, other_scripts_values):
     """Function that returns a new value and a new expected score on a single script."""
     expected_score = 0
     information = 0

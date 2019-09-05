@@ -10,7 +10,8 @@ from project.models import *
 from diff_match_patch import diff_match_patch
 from bs4 import BeautifulSoup
 
-
+"""Function that controls user permission. It is being used as a decorator in the 
+    other functions in this file that have restricted access based on user type."""
 def project_login_required(user_allowed):
     def wrap(function):
         def wrapper(request, *args, **kw):
@@ -26,18 +27,18 @@ def project_login_required(user_allowed):
 
     return wrap
 
-
+"""Function that returns the index-page, where the login/register option is."""
 def index(request):
     return render(request, 'index.html')
 
 
+"""Function that lets a teacher register and creates a teacher-user object."""
 def teacher_register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
 
         if form.is_valid():
             user = form.save(commit=False)
-            # user.refresh_from_db()
             user.is_teacher = True
             user.save()
 
@@ -48,6 +49,7 @@ def teacher_register(request):
     return render(request, 'teacher_register.html', {'form': form})
 
 
+"""Function that handles the login-functionality. The validation of user credentials is handled by Django's own authentication-system."""
 def log_in(request):
     if request.method == 'POST':
         form = CustomAuthenticationForm(request=request, data=request.POST)
@@ -72,12 +74,12 @@ def log_in(request):
                   template_name="login.html",
                   context={"form": form})
 
-
+"""Function that handles the logout of a user. Uses the Djangos authentication system to achieve this."""
 def log_out(request):
     logout(request)
     return redirect('index')
 
-
+""""Function that creates a student-user object. Uses the project_login_required decorator to ensure only authorised access."""
 @project_login_required(user_allowed='teacher')
 def add_student(request):
     if request.method == 'POST':
@@ -102,6 +104,7 @@ def add_student(request):
     return render(request, 'add_student.html', {'register_form': register_form, 'student_form': student_form})
 
 
+""""Function that creates a patch-object. Uses the project_login_required decorator to ensure only authorised access."""
 @project_login_required(user_allowed='teacher')
 def add_patch(request):
     if request.method == 'POST':
@@ -121,7 +124,7 @@ def add_patch(request):
     return render(request, 'add_patch.html', {
         'patch_form': patch_form})
 
-
+""""Function that creates a peer-rubric object. Uses the project_login_required decorator to ensure only authorised access."""
 @project_login_required(user_allowed='teacher')
 def add_rubric(request, pk):
     patch = Patch.objects.get(id=pk)
@@ -141,6 +144,8 @@ def add_rubric(request, pk):
     })
 
 
+"""Function that renders the teacher home-page. It gets all the data regarding the patches, students, their
+    submissions and editing, and adds it to a 3d array, so it can be easily displayed in a table in the template. """
 @project_login_required(user_allowed='teacher')
 def teacher_home(request):
     students = Student.objects.all()
@@ -152,11 +157,14 @@ def teacher_home(request):
     arr = []
     for student in students:
         sub_arr = []
+
         for patch in patches:
             sub_sub_arr = []
             sub = '&#10006'
             edit_count = 0
             reviewed = '&#10006'
+
+            #Checking if the students have submitted in time or not.
             try:
                 org_sub = Submission.objects.get(student=student, patch=patch, is_original=True)
                 if org_sub.published_date < org_sub.patch.submission_date:
@@ -164,18 +172,15 @@ def teacher_home(request):
                 else:
                     sub = '!'
 
+                #Checking if the student have completed the all the required peer-reviewing.
                 peer_review = Feedback.objects.filter(author=student.user, submission__patch=patch).values(
                     'submission').distinct()
-                # print(peer_review)
-
                 no_of_reviews_needed = Student.objects.filter(group=student.group).count() - 1
-
-              
-                     
-
+                
                 if peer_review.count() == no_of_reviews_needed:
                      reviewed =  "&#10004;"
-
+                
+                #Checks how many times a student has edited a submission.
                 edited_sub = Submission.objects.filter(student=student, patch=patch, is_original=False)
                 if edited_sub:
                     edit_count = Submission_edits.objects.filter(submission__in=edited_sub).count()
@@ -201,7 +206,7 @@ def teacher_home(request):
         'zipped': zipped
     })
 
-
+"""Function that renders the teachers patch-view"""
 @project_login_required(user_allowed='teacher')
 def teacher_patch_view(request, pk):
     patch = Patch.objects.get(id=pk)
@@ -217,9 +222,6 @@ def teacher_patch_view(request, pk):
     })
 
 
-@project_login_required(user_allowed='teacher')
-def teacher_patches(request):
-    return render(request, 'teacher_patches.html')
 
 
 @project_login_required(user_allowed='student')
@@ -429,21 +431,13 @@ def student_home(request):
 
 @login_required()
 def stitch_patches(request, student_id):
-    if request.method == 'POST':
-        
-        form = SubmissionForm(request.POST)
-        
-        if form.is_valid():
-            submission = form.save(commit=False)
-            submission.student = Student.objects.get(user=request.user)
-            submission.patch = Patch.objects.get(id=pk)
-            submission.published_date = datetime.now()
-            submission.is_original = False
-            submission.save()
+    
 
     patch_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
     patches = Patch.objects.filter(id__in=patch_ids)
     student = Student.objects.get(id = student_id)
+
+
 
     original_submissions = Submission.objects.filter(student__id = student_id, patch__id__in=patches,
                                                      is_original=True).order_by('patch__id')
@@ -463,6 +457,26 @@ def stitch_patches(request, student_id):
         'submission_edits': submission_edits,
         'feedback': feedback})
 
+
+def teacher_feedback(request, sub_id):
+
+    submission = Submission.objects.get(id = sub_id)
+    if request.method == 'POST':
+        
+        form = PeerReviewForm(request.POST)
+        
+        if form.is_valid():
+            feedback = form.save(commit=False)
+            feedback.author = request.user
+            feedback.submission = submission
+            feedback.date = datetime.now()
+            feedback.save()
+
+    form = PeerReviewForm()
+    return render(request, 'teacher_feedback.html', context={
+        'form':form,
+        'submission':submission
+    })
 
 @project_login_required(user_allowed='teacher')
 def new_judge_session(request, pk):

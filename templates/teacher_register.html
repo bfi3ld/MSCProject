@@ -8,9 +8,10 @@
     {% endblock %}
 
 {% block content %}
-<div>
-    <form id="TeacherRegisterForm" method="post">
+<div class = "form">
     
+    <form id="TeacherRegisterForm" method="post">
+    <h3>Register as teacher</h3>
      {% csrf_token %}
      {{ form.as_table }}
      {{ user_form.as_table }}
