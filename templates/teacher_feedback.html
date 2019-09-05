@@ -13,13 +13,23 @@
         <div class = "patch_content">
       
  
-            
+        <div class = "submission"><h3>{{submission.student.user.username}}</h3><p>{{submission.content}}</p></div>
+        <div class = "feedback">
+            <div class = "form">
+                <form action="{% url 'teacher_feedback' submission.id %}" method="post">
+                    <p>Submit feedback for {{submission.student.user.username}}<p>
+                        {% csrf_token %}
+                        {{ form }}
+                        <input type="submit" name="submit"/>
+                         </form>
+                        </div>
+        </div>
                 
 
 
 
                        
-                    </div>
+        </div>
       
        
                

@@ -13,15 +13,16 @@
     <div class= "patch_title">
         <p>{{o.patch.patch_title}}</p>
     </div>
-    {% if user.is_teacher %}
-
-    
-    {% endif %}
+   
         <div class = "patch_content">
+                
       
             <div class = "submission_history">
                 <div class = "edit_border">
-                    <p>Original submitted on {{ o.published_date }}</p><icon id = "id-sub-{{forloop.counter}}" onclick = "collapse_menu('{{o.id }}', this.id);">+</icon>
+                    <p>Original submitted on {{ o.published_date }}</p>{% if user.is_teacher %}
+                    <div class = "feedback_div"><a class = "give_feedback" href = "{% url 'teacher_feedback' o.id %}">Give feedback</a></div> 
+         
+                     {% endif %}<icon id = "id-sub-{{forloop.counter}}" onclick = "collapse_menu('{{o.id }}', this.id);">+</icon>
                 </div>
                 <div class = "collapsable" id = "{{ o.id }}">
                     {{ o.content|safe }}

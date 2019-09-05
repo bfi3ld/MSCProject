@@ -23,6 +23,7 @@ urlpatterns = [
     path('teacher_home/teacher_patch_view/<int:pk>/add_rubric', views.add_rubric, name='add_rubric'),
     path('teacher_home/add_student', views.add_student, name='add_student'),
     path('teacher_home/add_patch', views.add_patch, name='add_patch'),
+    path('teacher_home/give_feedback/<int:sub_id>', views.teacher_feedback, name = 'teacher_feedback'),
     path('teacher_home/teacher_patch_view/<int:pk>/new_judge_session', views.new_judge_session, name='new_judge_session'),
     path('teacher_home/teacher_patch_view/<int:pk>/acj/<int:pair_id>/<int:winner>', views.generate_pair, name='generate_pair'),
 ]

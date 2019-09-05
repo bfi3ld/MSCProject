@@ -378,17 +378,19 @@ def submit_peer_review(request, pk, subid, rubrik):
     submission = Submission.objects.get(id=subid)
     author = request.user
     peer_rubrik = Peer_review_rubrik.objects.get(id=rubrik)
-    form = PeerReviewForm(request.POST)
+    form = PeerReviewForm()
 
-    if form.is_valid():
-       
+    if request == POST:
+        if form.is_valid():
         
+        form = PeerReviewForm(request.POST)
         peer_review = form.save(commit=False)
         peer_review.submission = submission
         peer_review.author = author
         peer_review.date = datetime.now()
         peer_review.peer_review_rubrik = peer_rubrik
         peer_review.save()
+        
     return redirect('group_submission', pk=pk, subid=subid)
 
 
@@ -461,6 +463,7 @@ def stitch_patches(request, student_id):
 def teacher_feedback(request, sub_id):
 
     submission = Submission.objects.get(id = sub_id)
+    form = PeerReviewForm()
     if request.method == 'POST':
         
         form = PeerReviewForm(request.POST)
@@ -471,8 +474,9 @@ def teacher_feedback(request, sub_id):
             feedback.submission = submission
             feedback.date = datetime.now()
             feedback.save()
+            return redirect('teacher_home')
 
-    form = PeerReviewForm()
+   
     return render(request, 'teacher_feedback.html', context={
         'form':form,
         'submission':submission
