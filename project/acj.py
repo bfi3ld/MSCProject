@@ -52,13 +52,11 @@ def get_single_value(script_score, script_value, other_scripts_values):
         information += prob * (1 - prob)
 
     information = max(information, 1e-5)
-    print("Script value ", script_value)
-    print("Expected score ", expected_score)
-    print("Information ", information)
+  
     try:
         script_value = script_value + ((script_score - expected_score) / information)
     except ZeroDivisionError:
-        print("hej")
+       
 
     return script_value, expected_score
 
