@@ -101,7 +101,22 @@ submissions = [{
     'published_date': datetime.datetime(2019, 2, 5),
     'student': "mystudent4@a.com",
     'is_original': True,
+},
+{
+    'patch': 'Patch1',
+    'content': 'At tellus at urna condimentum mattis pellentesque id. Sed cras ornare arcu dui vivamus arcu. This is changed.',
+    'published_date': datetime.datetime(2019, 2, 5),
+    'student': "mystudent2@a.com",
+    'is_original': False,
 }, {
+    'patch': 'Patch1',
+    'content': 'Sed felis eget velit aliquet sagittis id consectetur. Mattis nunc sed blandit libero volutpat sed cras. Blandit aliquam etiam erat velit. Nibh venenatis cras sed felis. Viverra accumsan in nisl nisi. This is changed.',
+    'published_date': datetime.datetime(2019, 2, 5),
+    'student': "mystudent1@a.com",
+    'is_original': False,
+},
+
+ {
     'patch': 'Patch2',
     'content': 'Vitae congue eu consequat ac felis donec et odio. Congue nisi vitae suscipit tellus mauris a diam maecenas sed. Metus dictum at tempor commodo ullamcorper a. Dictum non consectetur a erat nam at lectus. Adipiscing at in tellus integer feugiat. Egestas fringilla phasellus faucibus scelerisque. Fringilla est ullamcorper eget nulla facilisi etiam dignissim.',
     'published_date': datetime.datetime(2019, 2, 5),
@@ -114,15 +129,23 @@ submissions = [{
     'student': "mystudent1@a.com",
     'is_original': True,
 }, {
-    {
+    
     'patch': 'Patch2',
     'content': 'Enim nulla aliquet porttitor lacus luctus accumsan tortor posuere ac. Rhoncus urna neque viverra justo. Vitae congue eu consequat ac felis donec et odio. Congue nisi vitae suscipit tellus mauris a diam maecenas sed. Metus dictum at tempor commodo ullamcorper a. Dictum non consectetur a erat nam at lectus. Adipiscing at in tellus integer feugiat. Egestas fringilla phasellus faucibus scelerisque.',
     'published_date': datetime.datetime(2019, 2, 5),
     'student': "mystudent1@a.com",
-    'is_original': True,
+    'is_original': False,
 }
-}
+
 ]
+peer_rubric = [{
+    'instruction':'This is a peer rubric instruction',
+    'patch':'Patch1',
+},
+{
+    'instruction':'This is a peer rubric instruction',
+    'patch':'Patch2',
+}]
 
 
 def add_stuff(model, info_dict):
@@ -152,6 +175,12 @@ def add_submission(patch, content, published_date, student, is_original):
     )
     if created: item.save()
 
+def add_rubric(instruction, patch):
+    item, created = Peer_review_rubric.objects.get_or_create(
+        instruction= instruction,
+        patch = patch
+    )
+    if created: item.save()
 
 def clean_db():
     for tbl in (User, Script, Round, Judgement):
