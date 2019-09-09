@@ -13,28 +13,28 @@ from project.models import User, Student, Patch, Submission, Script, Round, Judg
 users = [
     {
         'username': 'theteacher',
-        "email": "myteacher@trimit.com",
+        "email": "myteacher@a.com",
         "is_teacher": True,
         "is_student": False,
     }, {
         'username': 'student1',
-        "email": "mystudent1@trimit.com",
+        "email": "mystudent1@a.com",
         "is_teacher": False,
         "is_student": True,
     }, {
         'username': 'student2',
-        "email": "mystudent2@trimit.com",
+        "email": "mystudent2@a.com",
         "is_teacher": False,
         "is_student": True,
     }, {
         'username': 'student3',
-        "email": "mystudent3@trimit.com",
+        "email": "mystudent3@a.com",
         "is_teacher": False,
         "is_student": True,
     },
     {
         'username': 'student4',
-        "email": "mystudent4@trimit.com",
+        "email": "mystudent4@a.com",
         "is_teacher": False,
         "is_student": True,
     },
@@ -56,63 +56,73 @@ students = [{
 
 # ========= PATCHES ===========
 patches = [{
-    'patch_title': 'MyPatch1',
-    'patch_description': '1111111',
-    'submission_date': datetime.datetime(2019, 2, 5),
-    'peer_review_date': datetime.datetime(2019, 2, 15),
+    'patch_title': 'Patch1',
+    'patch_description': 'This is the instruction for the first patch',
+    'submission_date': datetime.datetime(2019, 7, 5),
+    'peer_review_date': datetime.datetime(2019, 7, 15),
     'is_final': False,
 }, {
-    'patch_title': 'MyPatch2',
-    'patch_description': '22222222222',
-    'submission_date': datetime.datetime(2019, 2, 5),
-    'peer_review_date': datetime.datetime(2019, 2, 15),
+    'patch_title': 'Patch2',
+    'patch_description': 'This is the instruction for the second patch',
+    'submission_date': datetime.datetime(2019, 9, 5),
+    'peer_review_date': datetime.datetime(2019, 9, 15),
     'is_final': False,
-}, {
-    'patch_title': 'MyPatch3',
-    'patch_description': '333333333',
-    'submission_date': datetime.datetime(2019, 2, 5),
-    'peer_review_date': datetime.datetime(2019, 2, 15),
+},
+ {
+    'patch_title': 'Final quilt',
+    'patch_description': 'This is the instruction for final quilt',
+    'submission_date': datetime.datetime(2019, 9, 5),
+    'peer_review_date': datetime.datetime(2019, 9, 15),
     'is_final': True,
 }]
 
 # ========= SUBMISSION ===========
 submissions = [{
-    'patch': 'MyPatch1',
-    'content': 'I got hit in the head with a can of soda yesterday. Luckily for me, it was a soft drink.',
+    'patch': 'Patch1',
+    'content': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent1@trimit.com",
+    'student': "mystudent1@a.com",
     'is_original': True,
 }, {
-    'patch': 'MyPatch1',
-    'content': 'I’m super friendly with 25 letters of the alphabet.I just don’t know why.',
+    'patch': 'Patch1',
+    'content': 'Nullam vehicula ipsum a arcu cursus vitae congue. Tellus cras adipiscing enim eu turpis egestas pretium aenean. Est lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque. Aenean vel elit scelerisque mauris pellentesque pulvinar pellentesque habitant. Adipiscing elit duis tristique sollicitudin nibh sit amet commodo nulla. Sed ullamcorper morbi tincidunt ornare massa. Aliquam vestibulum morbi blandit cursus risus at. ',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent2@trimit.com",
+    'student': "mystudent2@a.com",
     'is_original': True,
 }, {
-    'patch': 'MyPatch2',
-    'content': 'My girlfriend broke up with me so I took her wheelchair. Guess who came crawling back.',
+    'patch': 'Patch1',
+    'content': 'At tellus at urna condimentum mattis pellentesque id. Sed cras ornare arcu dui vivamus arcu felis bibendum ut. Aliquam ultrices sagittis orci a scelerisque purus semper eget. Elit duis tristique sollicitudin nibh sit amet. At lectus urna duis convallis convallis tellus. Quis risus sed vulputate odio. Id neque aliquam vestibulum morbi blandit.',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent1@trimit.com",
+    'student': "mystudent3@a.com",
     'is_original': True,
 }, {
-    'patch': 'MyPatch2',
-    'content': 'My boss is going to fire the employee with the worst posture. I have a hunch it might be me.',
+    'patch': 'Patch1',
+    'content': 'Sed felis eget velit aliquet sagittis id consectetur. Mattis nunc sed blandit libero volutpat sed cras. Blandit aliquam etiam erat velit. Nibh venenatis cras sed felis. Viverra accumsan in nisl nisi. Enim blandit volutpat maecenas volutpat blandit. Augue eget arcu dictum varius duis at. Amet volutpat consequat mauris nunc congue. Morbi leo urna molestie at elementum eu facilisis sed odio. Massa tincidunt nunc pulvinar sapien.',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent2@trimit.com",
+    'student': "mystudent4@a.com",
     'is_original': True,
 }, {
-    'patch': 'MyPatch3',
-    'content': 'C',
+    'patch': 'Patch2',
+    'content': 'Vitae congue eu consequat ac felis donec et odio. Congue nisi vitae suscipit tellus mauris a diam maecenas sed. Metus dictum at tempor commodo ullamcorper a. Dictum non consectetur a erat nam at lectus. Adipiscing at in tellus integer feugiat. Egestas fringilla phasellus faucibus scelerisque. Fringilla est ullamcorper eget nulla facilisi etiam dignissim.',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent3@trimit.com",
+    'student': "mystudent3@a.com",
     'is_original': True,
 }, {
-    'patch': 'MyPatch3',
-    'content': 'mysubmission3',
+    'patch': 'Patch2',
+    'content': 'Enim nulla aliquet porttitor lacus luctus accumsan tortor posuere ac. Rhoncus urna neque viverra justo. Vitae congue eu consequat ac felis donec et odio. Congue nisi vitae suscipit tellus mauris a diam maecenas sed. Metus dictum at tempor commodo ullamcorper a. Dictum non consectetur a erat nam at lectus. Adipiscing at in tellus integer feugiat. Egestas fringilla phasellus faucibus scelerisque.',
     'published_date': datetime.datetime(2019, 2, 5),
-    'student': "mystudent1@trimit.com",
+    'student': "mystudent1@a.com",
     'is_original': True,
-}]
+}, {
+    {
+    'patch': 'Patch2',
+    'content': 'Enim nulla aliquet porttitor lacus luctus accumsan tortor posuere ac. Rhoncus urna neque viverra justo. Vitae congue eu consequat ac felis donec et odio. Congue nisi vitae suscipit tellus mauris a diam maecenas sed. Metus dictum at tempor commodo ullamcorper a. Dictum non consectetur a erat nam at lectus. Adipiscing at in tellus integer feugiat. Egestas fringilla phasellus faucibus scelerisque.',
+    'published_date': datetime.datetime(2019, 2, 5),
+    'student': "mystudent1@a.com",
+    'is_original': True,
+}
+}
+]
 
 
 def add_stuff(model, info_dict):
@@ -169,6 +179,6 @@ def populate():
 
 
 if __name__ == '__main__':
-    print("Starting trimit population script...")
+    print("Starting population script...")
     populate()
     print("DONE !")

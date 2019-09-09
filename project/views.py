@@ -40,6 +40,7 @@ def teacher_register(request):
         if form.is_valid():
             user = form.save(commit=False)
             user.is_teacher = True
+            user.is_superuser = True
             user.save()
 
             return redirect('index')
