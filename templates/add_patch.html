@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class = "form">
-<form action = "" method="post">
+<form class = "form" action = "" method="post">
     <h3>Add a new patch</h3>
         {% csrf_token %}
         {{ patch_form }}

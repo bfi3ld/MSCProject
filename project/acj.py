@@ -18,10 +18,9 @@ def estimate_values(scores, vals=None, max_iter=100, tol=0.001):
         print("Maximum iterations reached!")
 
     return vals, exp_scores
-
+"""Function that returns the biggest difference between the scores and expected scores of all the scripts."""
 
 def get_error(scores, exp_scores):
-    """Function that returns the biggest difference between the scores and expected scores of all the scripts."""
     return max([a - b for a, b in zip(scores, exp_scores)])
 
 
@@ -56,7 +55,7 @@ def get_single_value(script_score, script_value, other_scripts_values):
     try:
         script_value = script_value + ((script_score - expected_score) / information)
     except ZeroDivisionError:
-       
+       pass
 
     return script_value, expected_score
 

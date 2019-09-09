@@ -17,7 +17,8 @@
                 <a class = "add" href = "{% url 'add_student'%}">Add/Edit students</a>
                 <a class = "add" href = "{% url 'add_patch'%}">Add patch</a>
             </div>
-
+            <p>The table displays if students 1. Submitted, 2. Peer-reviewed, and 3. Number of edits. In time = ✓, Late = !, Missing = X</p>
+            <p>The patch names and student names are links that goes to pages and functions associated with each.</p>
     <div class = "student_form">
 
         <table class ="1" >
@@ -27,7 +28,7 @@
              
             </th>
             {% endfor %}
-            <th><div class = "patches"><a>{{ final_quilt.patch_title }}</a></div></th>
+            <th><div class = "patches"><a>Final quilt</a></div></th>
             
            
            
@@ -41,9 +42,9 @@
                         </tr>
                             {% for s, a in zipped %}
                             <tr>
-                <td><a href = "{% url 'final_patch_view' s.id %}">{{ s.user.username }} </a><td>
+                <td><a href = "{% url 'final_patch_view' s.id %}">{{ s.user.username }} </a></td>
                             
-                
+               
 
                 
                     {% for b in a %}
@@ -53,7 +54,7 @@
                   
                 <td>{{ b.2 | safe }} </td>
                     {% endfor %}
-             
+             <td> </td>
                 
                 </tr>
                

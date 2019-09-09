@@ -48,7 +48,7 @@
                 </div>
                 
                 <form action="{% url 'submit_peer_review' patch.id submission.id rubrik.id %}" class = "form" method="post">
-                        {% csrf_token %}
+               {% csrf_token %}
                 {{ form }}
                 <input type="submit" name="submit"/>
                  </form>

@@ -18,6 +18,7 @@ urlpatterns = [
     path('student_home/patch_view/<int:pk>/make_submission', views.make_submission, name='make_submission'),
     path('student_home/final_patch_view/<int:student_id>', views.final_patch_view, name='final_patch_view'),
     path('student_home/final_patch_view/<int:student_id>/stitch_patches', views.stitch_patches, name='stitch_patches'),
+    path('student_home/final_patch_view/<int:id>/make_final_submission', views.make_final_submission, name = "make_final_submission"),
     path('teacher_home', views.teacher_home, name='teacher_home'),
     path('teacher_home/teacher_patch_view/<int:pk>', views.teacher_patch_view, name='teacher_patch_view'),
     path('teacher_home/teacher_patch_view/<int:pk>/add_rubric', views.add_rubric, name='add_rubric'),

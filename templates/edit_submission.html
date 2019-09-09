@@ -21,7 +21,7 @@
             <a class = "box_link" id = "view_feedback" href = "{% url 'view_feedback' patch.id %}"><p>View feedback/Edit</p></a>
             
         </div>
-        <form action = "" class = "form" method="post">
+        <form action = "" method="post">
                 {% csrf_token %}
                 {{ form }}
                

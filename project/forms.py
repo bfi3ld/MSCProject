@@ -15,7 +15,7 @@ class SubmissionForm(forms.ModelForm):
 
     class Meta:
         model = Submission
-        fields = ['content']
+        fields = ['content',]
 
 class EditSubmissionForm(forms.Form):
     content = forms.CharField(widget=SummernoteWidget())

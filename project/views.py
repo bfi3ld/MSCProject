@@ -245,6 +245,27 @@ def make_submission(request, pk):
 
     return render(request, 'make_submission.html', context={'form': form})
 
+@project_login_required(user_allowed='student')
+def make_final_submission(request, id):
+    if request.method == 'POST':
+        form = SubmissionForm(request.POST)
+
+        if form.is_valid():
+            submission = form.save(commit=False)
+            submission.student = Student.objects.get(user=request.user)
+            submission.patch = Patch.objects.get(is_final = True)
+            submission.published_date = datetime.now()
+            submission.is_original = True
+            submission.save()
+            
+
+        else:
+            print(form.errors)
+    else:
+        form = SubmissionForm()
+
+    return redirect('student_home')
+
 
 @project_login_required(user_allowed='student')
 def edit_submission(request, pk):
@@ -380,7 +401,7 @@ def submit_peer_review(request, pk, subid, rubrik):
     peer_rubrik = Peer_review_rubrik.objects.get(id=rubrik)
     form = PeerReviewForm()
 
-    if request == POST:
+    if request.method == 'POST':
         if form.is_valid():
         
             form = PeerReviewForm(request.POST)
@@ -438,7 +459,7 @@ def stitch_patches(request, student_id):
     patch_ids = [int(k) for k in request.POST.keys() if k != 'csrfmiddlewaretoken']
     patches = Patch.objects.filter(id__in=patch_ids)
     student = Student.objects.get(id = student_id)
-
+    form = SubmissionForm()
 
 
     original_submissions = Submission.objects.filter(student__id = student_id, patch__id__in=patches,
@@ -457,7 +478,8 @@ def stitch_patches(request, student_id):
         'original':original_submissions,
         'latest':latest_submissions,
         'submission_edits': submission_edits,
-        'feedback': feedback})
+        'feedback': feedback,
+        'form' : form})
 
 
 def teacher_feedback(request, sub_id):
@@ -488,13 +510,16 @@ def new_judge_session(request, pk):
         data will be used to update does values in line with ACJ(Pollit 2012)"""
     patch = Patch.objects.get(id=pk)
     submissions = Submission.objects.filter(patch__id=pk, is_original=True)
-    next_round = Round.objects.filter(patch=patch).latest('id')
+    if submissions.count() < 2:
+        return redirect('teacher_home')
+    next_round = Round.objects.filter(patch=patch)
     if not next_round:
         next_round = Round.objects.create(patch=patch, what_round=1)
-        
+
         for s in submissions:
             Script.objects.create(script=s)
- 
+    else:
+        next_round = Round.objects.filter(patch=patch).latest('id')
 
     scripts = Script.objects.filter(script__in=submissions).order_by('score')
     user = request.user
@@ -503,6 +528,8 @@ def new_judge_session(request, pk):
 
 def setup_round(pk, scripts, user):
     """Function that sets up each round by creating the judgement objects and assign pairs."""
+    
+    
     what_round = Round.objects.filter(patch__id=pk).latest('id')
     patch = Patch.objects.get(id=pk)
     try:
