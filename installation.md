@@ -60,9 +60,11 @@ If the database was populated with the test data, the following users are availa
 - student4
 The password for all of them has been setup as: *h$iog892f*
 
-An admin user has also been created by the population script with username and password both equal to: *a*
+theteacher user also have access to the Django admin page, where models can be viewed and manipulated.
 The admin page can be reached from the browser at the following address:
 ```
 http://localhost:8000/admin
 ```
+## ACJ-function
+The ACJ-functionality can be found by logging in as as theteacher, click on 'Patch1' in the student-table, and then click on the button 'judge submissions'.
 
